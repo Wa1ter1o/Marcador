@@ -35,27 +35,24 @@ rojo = pygame.transform.scale( rojo, (int( rojo.get_rect()[2] * escala), int( ro
 
 #***********************VARIABLES DEL JUEGO**********************************************************************************
 
-pJugadorUno = 0                 #puntos del jugador uno
-pJugadorDos = 0                 #puntos del jugador dos
+medidas = { "medioX" : 960, "cuartoX" : 480, "tresCuartosX" : 1440 }
 
-sJugadorUno = 0                 #sets del jugador uno
-sJugadorDos = 0                 #sets del jugador dos
+iu = { 
+    "fuente" : "OCR A Extended", 
+    "tFNombre" : 100, "tFMarcador" : 475, "tFSets" : 200, 
+    "yNombre" : 125, "yMarcador" : 225, "ySets" : 700, 
+    "compSets" : 300
+    }
 
-nJugadorUno = "Jugador 1"       #nombre del jugador uno
-nJugadorDos = "Jugador 2"       #nombre del jugador dos
+jugadorUno = { "puntos" : 0, "sets" : 0, "nombre" : "Jugador 1", "saque" : True, "lado" : True, "color" : True }
+jugadorDos = { "puntos" : 0, "sets" : 0, "nombre" : "Jugador 2", "saque" : False, "lado" : False, "color" : False }
 
 sets = 1                        #sets a jugar
 puntos = 11                     #puntos a jugar por set
-
 cambioSaque = 2                 #número de saques para hacer cambio de saque
-saque = False                   #define quien saca, False: Azul, True: Rojo
-
-lado = False                    #indica el lado de cada jugador. False: Azul a la izquierda,  True: Rojo a la izquierda 
 
 #-----------------------------FUNCIONES--------------------------------------------------------------------------------------
 
-def mover():
-    print ( "moviendo" )
 
 def dibujarFondo():
     ventana.blit( fondo, ( 0, 0 ) )
@@ -64,17 +61,47 @@ def dibujarFondo():
 
 
 def dibujarDatos():
-    print("dibujando datos")
+
+    # Dibujado de nombre de jugador izquierdo
+    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"] * escala ) )
+    imgTexto = fuente.render( str( jugadorUno["nombre"] ), True, ( 255, 255, 255 ) )
+    ventana.blit( imgTexto, ( ( int( ( medidas["cuartoX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), ( int( iu["yNombre"] * escala ) ) ) )
+
+    # Dibujado de nombre de jugador derecho
+    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"] * escala ) )
+    imgTexto = fuente.render( str( jugadorDos["nombre"] ), True, ( 255, 255, 255 ) )
+    ventana.blit( imgTexto, ( ( int( ( medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), ( int( iu["yNombre"] * escala ) ) ) )
 
 def dibujarMarcadores():
 
-    fuente = pygame.font.SysFont( "Lucida Sans", int( 200 * escala ) )
-    imgTexto = fuente.render( str( pJugadorUno ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, ( ( int( 450 + ( imgTexto.get_rect()[2] ) / 2 ), ( int( 250 * escala ) ) ) )
+    # Dibujado de marcador izqiuerdo
+    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFMarcador"] * escala ) )
+    imgTexto = fuente.render( str( jugadorUno["puntos"] ), True, ( 255, 255, 255 ) )
+    ventana.blit( imgTexto, ( ( int( ( medidas["cuartoX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), ( int( iu["yMarcador"] * escala ) ) ) )
 
-    fuente = pygame.font.SysFont( "Lucida Sans", int( 200 * escala ) )
-    imgTexto = fuente.render( str( pJugadorDos ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, ( ( ( 1200 + ( imgTexto.get_rect()[2] ) / 2 ) * escala ), ( int( 250 * escala)  ) ) )
+    # Dibujado de marcador derecho
+    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFMarcador"] * escala ) )
+    imgTexto = fuente.render( str( jugadorDos["puntos"] ), True, ( 255, 255, 255 ) )
+    ventana.blit( imgTexto, ( ( int( ( medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), ( int( iu["yMarcador"] * escala ) ) ) )
+
+    # Dibujado de sets izquierdo
+    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFSets"] * escala ) )
+    imgTexto = fuente.render( str( jugadorUno["sets"] ), True, ( 255, 255, 255 ) )
+    ventana.blit( imgTexto, ( ( int( ( iu["compSets"] + medidas["cuartoX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), ( int( iu["ySets"] * escala ) ) ) )
+
+    # Dibujado de sets izquierdo
+    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFSets"] * escala ) )
+    imgTexto = fuente.render( str( jugadorDos["sets"] ), True, ( 255, 255, 255 ) )
+    ventana.blit( imgTexto, ( ( int( ( iu["compSets"] - medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), ( int( iu["ySets"] * escala ) ) ) )
+
+def modificarPuntos(jugador, incremental):
+
+
+    if jugador == 1:
+        jugadorUno["puntos"] += incremental
+
+    if jugador == 2:
+        jugadorDos["puntos"] += incremental
 
 def quit():
     pygame.font.quit()
@@ -85,7 +112,6 @@ def quit():
 
 while True:
 
-    mover()
     dibujarFondo()
     dibujarDatos()
     dibujarMarcadores()
@@ -98,10 +124,10 @@ while True:
                 quit()
 
             if evento.key == pygame.K_LEFT:
-                pJugadorUno += 1
+                modificarPuntos( 1, 1 )
 
             if evento.key == pygame.K_RIGHT:
-                pJugadorDos += 1
+                modificarPuntos( 2, 1 ) 
 
 
         if evento.type == globales.QUIT:
