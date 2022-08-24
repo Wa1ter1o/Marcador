@@ -22,8 +22,9 @@ print("escala: " + str(escala))
 #escala = 0.83
 
 ventana = pygame.display.set_mode( ( int( ancho * escala ), int( alto * escala ) ), pygame.FULLSCREEN)
+canvas = pygame.Surface( (ancho, alto) )
 
-print( "ventana: " , ventana.get_rect()[2], ventana.get_rect()[3])
+print( "canvas: " , canvas.get_rect()[2], canvas.get_rect()[3])
 
 pygame.display.set_caption( 'Marcador para tenis de mesa' )
 
@@ -41,12 +42,10 @@ derecha = rojo
 
 medidas = { "medioX" : 960, "cuartoX" : 480, "tresCuartosX" : 1440 }
 
-print ( "MedioX: " , medidas["medioX"] * escala)
-
 iu = { 
     "fuente" : "OCR A Extended", 
-    "tFNombre" : 100, "tFMarcador" : 475, "tFSets" : 200, 
-    "yNombre" : 125, "yMarcador" : 225, "ySets" : 700, 
+    "tFNombre" : 100, "tFMarcador" : 475, "tFSets" : 250, 
+    "yNombre" : 125, "yMarcador" : 225, "ySets" : 650, 
     "compSets" : 300, "compMarcos" : 20
     }
 
@@ -59,19 +58,21 @@ sets = 1                        #sets a jugar
 puntos = 11                     #puntos a jugar por set
 cambioSaque = 2                 #número de saques para hacer cambio de saque
 
+
+
 #-----------------------------FUNCIONES--------------------------------------------------------------------------------------
 
 
 def dibujarFondo():
-    ventana.blit( fondo, ( 0, 0 ) )     #dibujar fondo
+    canvas.blit( fondo, ( 0, 0 ) )     #dibujar fondo
 
     # dibujar marco de marcador izquierdo
-    ventana.blit(izquierda, ( 
+    canvas.blit(izquierda, ( 
         int( ( medidas["cuartoX"] - ( (izquierda.get_rect()[2] / escala) / 2 ) + iu["compMarcos"] ) * escala ),
         int( 60 * escala ) ) )
 
     # dibujar marco de marcador derecho
-    ventana.blit(derecha, ( 
+    canvas.blit(derecha, ( 
         int( ( medidas["tresCuartosX"] - ( ( derecha.get_rect()[2] / escala) / 2 ) - iu["compMarcos"] ) * escala ), 
         int( 60 * escala ) ) )
 
@@ -82,48 +83,55 @@ def dibujarDatos():
     # Dibujado de nombre de jugador izquierdo
     fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"] * escala ) )
     imgTexto = fuente.render( str( jugadorUno["nombre"] ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, 
+    canvas.blit( imgTexto, 
         ( ( int( ( medidas["cuartoX"] - ( ( imgTexto.get_rect()[2] / escala ) / 2) + iu["compMarcos"] ) * escala )), 
         ( int( iu["yNombre"] * escala ) ) ) )
 
     # Dibujado de nombre de jugador derecho
     fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"] * escala ) )
     imgTexto = fuente.render( str( jugadorDos["nombre"] ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, ( ( int( ( medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), 
+    canvas.blit( imgTexto, ( ( int( ( medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), 
         ( int( iu["yNombre"] * escala ) ) ) )
+
+    # Dibujando pelota a quien corresponda hacer el saque
+
+    if jugadorUno['saque'] :
+        pygame.draw.circle( canvas, ( 250, 250, 250 ), ( medidas['medioX'] - 725, iu['ySets'] + 125 ), 100)
+    else:
+        pygame.draw.circle( canvas, ( 250, 250, 250 ), ( medidas['medioX'] + 725, iu['ySets'] + 125 ), 100)
 
 def dibujarMarcadores():
 
     # Dibujado de marcador izquierdo
     fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFMarcador"] * escala ) )
     imgTexto = fuente.render( str( jugadorUno["puntos"] ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, 
+    canvas.blit( imgTexto, 
         ( ( int( ( medidas["cuartoX"] - ( ( imgTexto.get_rect()[2] / escala ) / 2) + iu["compMarcos"] ) * escala )), 
         ( int( iu["yMarcador"] * escala ) ) ) )
 
     # Dibujado de marcador derecho
     fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFMarcador"] * escala ) )
     imgTexto = fuente.render( str( jugadorDos["puntos"] ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, 
+    canvas.blit( imgTexto, 
         ( ( int( ( medidas["tresCuartosX"] - ( ( imgTexto.get_rect()[2] / escala ) / 2) - + iu["compMarcos"] ) * escala )), 
         ( int( iu["yMarcador"] * escala ) ) ) )
 
     # Dibujado de sets izquierdo
     fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFSets"] * escala ) )
     imgTexto = fuente.render( str( jugadorUno["sets"] ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, ( ( int( ( iu["compSets"] + medidas["cuartoX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), 
+    canvas.blit( imgTexto, ( ( int( ( iu["compSets"] + medidas["cuartoX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), 
         ( int( iu["ySets"] * escala ) ) ) )
 
     # Dibujado de sets izquierdo
     fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFSets"] * escala ) )
     imgTexto = fuente.render( str( jugadorDos["sets"] ), True, ( 255, 255, 255 ) )
-    ventana.blit( imgTexto, ( ( int( ( iu["compSets"] - medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), 
+    canvas.blit( imgTexto, ( ( int( ( iu["compSets"] - medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) ) * escala )), 
         ( int( iu["ySets"] * escala ) ) ) )
 
 def dibujarCuadrados():
 
-    pygame.draw.rect(ventana, ( 200, 200, 200 ), ( 0, 0, medidas["medioX"] * escala, alto/2 * escala), 5 )
-    pygame.draw.rect(ventana, ( 200, 200, 200 ), ( medidas["cuartoX"] * escala, 0, medidas["medioX"] * escala , alto * escala ), 5 )
+    pygame.draw.rect(canvas, ( 200, 200, 200 ), ( 0, 0, medidas["medioX"] * escala, alto/2 * escala), 5 )
+    pygame.draw.rect(canvas, ( 200, 200, 200 ), ( medidas["cuartoX"] * escala, 0, medidas["medioX"] * escala , alto * escala ), 5 )
 
 
 
@@ -134,6 +142,11 @@ def modificarPuntos(jugador, incremental):
 
     if jugador == 2:
         jugadorDos["puntos"] += incremental
+
+def dibujarCanvas():
+
+    canvasEscalado = pygame.transform.scale( canvas, ( int( ancho * escala ), int( alto * escala ) ) )
+    ventana.blit( canvasEscalado, ( 0, 0 ) )
 
 def quit():
     pygame.font.quit()
@@ -147,7 +160,7 @@ while True:
     dibujarFondo()
     dibujarDatos()
     dibujarMarcadores()
-    dibujarCuadrados()
+    #dibujarCuadrados()
 
 
     for evento in eventos.get():
@@ -166,6 +179,7 @@ while True:
         if evento.type == globales.QUIT:
             quit()
 
+    dibujarCanvas()
 
     pygame.display.update()
 
