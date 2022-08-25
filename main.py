@@ -4,14 +4,17 @@ import pygame.locals as globales
 import pygame.event as eventos
 import pygame.time as tiempo
 
+import jugador
+
 pygame.init()
 pygame.font.init()
 #pygame.mouse.set_visible(False)
 
 frames = tiempo.Clock() 
-fps = 10                            #velocidad de actualización en frames por segundo
-velocidadDeAnimacion = 1            #tiempo en segundos para hacer cada animación
- 
+fps = 30                            #velocidad de actualización en frames por segundo
+velAnim = 1                         #tiempo en segundos para hacer cada animación
+pasoAnim = 3                        #incremental de movimiento para todas las animaciones en pixels
+
 ancho, alto = 1920, 1080
 #obtener resolución de pantalla
 infoPantalla = pygame.display.Info()
@@ -35,22 +38,16 @@ fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
 
 azul = pygame.image.load( "assets/img/azul.png" )
 rojo = pygame.image.load( "assets/img/rojo.png" )
+color = True
 
 #***********************VARIABLES DEL INTERFÁZ DE USUARIO********************************************************************
 
-medidas = { "medioX" : 960, "cuartoX" : 480, "tresCuartosX" : 1440 }
 
-iu = { 
-    "fuente" : "OCR A Extended", 
-    "tFNombre" : 100, "tFMarcador" : 475, "tFSets" : 250, 
-    "yNombre" : 125, "yMarcador" : 225, "ySets" : 650, 
-    "compSets" : 300, "compMarcos" : 20
-    }
 
 #*****************************VARIABLES DEL JUEGO****************************************************************************
 
-jugadorUno = { "puntos" : 0, "sets" : 0, "nombre" : "Jugador 1", "saque" : True, "color" : azul }
-jugadorDos = { "puntos" : 0, "sets" : 0, "nombre" : "Jugador 2", "saque" : False, "color" : rojo }
+jugadorUno = jugador.Jugador(pygame, "Jugador 1", True, azul, "izquierda")
+jugadorDos = jugador.Jugador(pygame, "Jugador 2", False, rojo, "derecha")
 
 sets = 1                        #sets a jugar
 puntos = 11                     #puntos a jugar por set
@@ -61,56 +58,14 @@ lado = True
 
 #-----------------------------FUNCIONES--------------------------------------------------------------------------------------
 
+def mover():
+    jugadorUno.mover(pasoAnim)
+    jugadorDos.mover(pasoAnim)
 
 def dibujarFondo():
+
     canvas.blit( fondo, ( 0, 0 ) )     #dibujar fondo
 
-    # dibujar marco de marcador izquierdo
-
-    if lado:
-        canvas.blit(jugadorUno["color"], ( 
-            int( ( medidas["cuartoX"] - ( ( jugadorUno["color"].get_rect()[2] ) / 2 ) + iu["compMarcos"] )  ),
-            int( 60  ) ) )
-
-        # dibujar marco de marcador derecho
-        canvas.blit(jugadorDos["color"], ( 
-            int( ( medidas["tresCuartosX"] - ( ( jugadorDos["color"].get_rect()[2] ) / 2 ) - iu["compMarcos"] )  ), 
-            int( 60  ) ) )
-
-    else:
-
-        canvas.blit(jugadorDos["color"], ( 
-            int( ( medidas["cuartoX"] - ( ( jugadorDos["color"].get_rect()[2] ) / 2 ) + iu["compMarcos"] )  ),
-            int( 60  ) ) )
-
-        # dibujar marco de marcador derecho
-        canvas.blit(jugadorUno["color"], ( 
-            int( ( medidas["tresCuartosX"] - ( ( jugadorUno["color"]()[2] ) / 2 ) - iu["compMarcos"] )  ), 
-            int( 60  ) ) )
-
-
-
-def dibujarDatos():
-
-    # Dibujado de nombre de jugador izquierdo
-    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"]  ) )
-    imgTexto = fuente.render( str( jugadorUno["nombre"] ), True, ( 255, 255, 255 ) )
-    canvas.blit( imgTexto, 
-        ( ( int( ( medidas["cuartoX"] - ( ( imgTexto.get_rect()[2]  ) / 2) + iu["compMarcos"] )  )), 
-        ( int( iu["yNombre"]  ) ) ) )
-
-    # Dibujado de nombre de jugador derecho
-    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"]  ) )
-    imgTexto = fuente.render( str( jugadorDos["nombre"] ), True, ( 255, 255, 255 ) )
-    canvas.blit( imgTexto, ( ( int( ( medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) )  )), 
-        ( int( iu["yNombre"]  ) ) ) )
-
-    # Dibujando pelota a quien corresponda hacer el saque
-
-    if jugadorUno['saque'] :
-        pygame.draw.circle( canvas, ( 250, 250, 250 ), ( medidas['medioX'] - 725, iu['ySets'] + 125 ), 100)
-    else:
-        pygame.draw.circle( canvas, ( 250, 250, 250 ), ( medidas['medioX'] + 725, iu['ySets'] + 125 ), 100)
 
 def dibujarMarcadores():
 
@@ -150,28 +105,26 @@ def comprobarReglas():
     print ("comprobando reglas")
 
 
-def modificarPuntos(jugador, incremental):
+def anotarPunto(jugador):
 
-    if jugador == 1:
-        jugadorUno["puntos"] += incremental
-
-    if jugador == 2:
-        jugadorDos["puntos"] += incremental
+    jugador.anotarPunto()
 
     comprobarReglas()
 
 def cambiarLado():
-    global lado
-    lado = not lado
+    jugadorUno.cambiarLado()
+    jugadorDos.cambiarLado()
 
 def cambiarColor():
-    if jugadorUno["color"] == azul:
-        jugadorUno["color"] = rojo
-        jugadorDos["color"] = azul
 
-    elif jugadorUno["color"] == rojo:
-        jugadorUno["color"] = azul
-        jugadorDos["color"] = rojo
+    if color:
+        jugadorUno.cambiarColor(rojo)
+        jugadorDos.cambiarColor(azul)
+    else:
+        jugadorUno.cambiarColor(azul)
+        jugadorDos.cambiarColor(rojo)
+
+    color = not color
 
 def dibujarCanvas():
 
@@ -187,9 +140,10 @@ def quit():
 
 while True:
 
+    mover()
     dibujarFondo()
-    dibujarDatos()
-    dibujarMarcadores()
+    dibujarJugadores()
+    #dibujarPelota()
     #dibujarCuadrados()
 
 
@@ -200,10 +154,10 @@ while True:
                 quit()
 
             if evento.key == pygame.K_LEFT:
-                modificarPuntos( 1, 1 )
+                anotarPunto(jugadorUno)
 
             if evento.key == pygame.K_RIGHT:
-                modificarPuntos( 2, 1 ) 
+                anotarPunto(jugadorDos) 
 
             if evento.key == pygame.K_SPACE:
                 cambiarLado()
