@@ -11,9 +11,9 @@ pygame.font.init()
 #pygame.mouse.set_visible(False)
 
 frames = tiempo.Clock() 
-fps = 30                            #velocidad de actualización en frames por segundo
+fps = 30                           #velocidad de actualización en frames por segundo
 velAnim = 1                         #tiempo en segundos para hacer cada animación
-pasoAnim = 3                        #incremental de movimiento para todas las animaciones en pixels
+pasoAnim = 80                     #incremental de movimiento para todas las animaciones en pixels
 
 ancho, alto = 1920, 1080
 #obtener resolución de pantalla
@@ -40,19 +40,18 @@ azul = pygame.image.load( "assets/img/azul.png" )
 rojo = pygame.image.load( "assets/img/rojo.png" )
 color = True
 
-#***********************VARIABLES DEL INTERFÁZ DE USUARIO********************************************************************
-
-
-
 #*****************************VARIABLES DEL JUEGO****************************************************************************
 
 jugadorUno = jugador.Jugador(pygame, "Jugador 1", True, azul, "izquierda")
 jugadorDos = jugador.Jugador(pygame, "Jugador 2", False, rojo, "derecha")
 
+pelota = jugador.pelota( "izquierda" )
+
 sets = 1                        #sets a jugar
 puntos = 11                     #puntos a jugar por set
 cambioSaque = 2                 #número de saques para hacer cambio de saque
 lado = True
+saque = True
 
 
 
@@ -62,44 +61,17 @@ def mover():
     jugadorUno.mover(pasoAnim)
     jugadorDos.mover(pasoAnim)
 
+    pelota.mover(pasoAnim)
+
 def dibujarFondo():
 
-    canvas.blit( fondo, ( 0, 0 ) )     #dibujar fondo
+    canvas.blit( fondo, ( 0, 0 ) )
 
+def dibujarJugadores():
+    canvas.blit(jugadorUno.generarImagen(), jugadorUno.pos)
+    canvas.blit(jugadorDos.generarImagen(), jugadorDos.pos)
 
-def dibujarMarcadores():
-
-    # Dibujado de marcador izquierdo
-    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFMarcador"]  ) )
-    imgTexto = fuente.render( str( jugadorUno["puntos"] ), True, ( 255, 255, 255 ) )
-    canvas.blit( imgTexto, 
-        ( ( int( ( medidas["cuartoX"] - ( ( imgTexto.get_rect()[2]  ) / 2) + iu["compMarcos"] )  )), 
-        ( int( iu["yMarcador"]  ) ) ) )
-
-    # Dibujado de marcador derecho
-    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFMarcador"]  ) )
-    imgTexto = fuente.render( str( jugadorDos["puntos"] ), True, ( 255, 255, 255 ) )
-    canvas.blit( imgTexto, 
-        ( ( int( ( medidas["tresCuartosX"] - ( ( imgTexto.get_rect()[2]  ) / 2) - + iu["compMarcos"] )  )), 
-        ( int( iu["yMarcador"]  ) ) ) )
-
-    # Dibujado de sets izquierdo
-    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFSets"]  ) )
-    imgTexto = fuente.render( str( jugadorUno["sets"] ), True, ( 255, 255, 255 ) )
-    canvas.blit( imgTexto, ( ( int( ( iu["compSets"] + medidas["cuartoX"] - ( imgTexto.get_rect()[2] / 2) )  )), 
-        ( int( iu["ySets"]  ) ) ) )
-
-    # Dibujado de sets derecho
-    fuente = pygame.font.SysFont( iu["fuente"], int( iu["tFSets"]  ) )
-    imgTexto = fuente.render( str( jugadorDos["sets"] ), True, ( 255, 255, 255 ) )
-    canvas.blit( imgTexto, ( ( int( ( - iu["compSets"] + medidas["tresCuartosX"] - ( imgTexto.get_rect()[2] / 2) )  )), 
-        ( int( iu["ySets"]  ) ) ) )
-
-def dibujarCuadrados():
-
-    pygame.draw.rect(canvas, ( 200, 200, 200 ), ( 0, 0, medidas["medioX"] , alto/2 ), 5 )
-    pygame.draw.rect(canvas, ( 200, 200, 200 ), ( medidas["cuartoX"] , 0, medidas["medioX"]  , alto  ), 5 )
-
+    pygame.draw.circle( canvas, ( 250, 250, 250), ( pelota.pos ), 100 )
 
 def comprobarReglas():
     print ("comprobando reglas")
@@ -115,7 +87,10 @@ def cambiarLado():
     jugadorUno.cambiarLado()
     jugadorDos.cambiarLado()
 
+    pelota.cambiarLado()
+
 def cambiarColor():
+    global  color
 
     if color:
         jugadorUno.cambiarColor(rojo)
@@ -125,6 +100,22 @@ def cambiarColor():
         jugadorDos.cambiarColor(rojo)
 
     color = not color
+
+def cambiarSaque():
+    global saque
+
+    jugadorUno.saque = not jugadorUno.saque
+    jugadorDos.saque = not jugadorDos.saque
+
+    '''if ( jugadorUno.saque == True and jugadorUno.lado == "izquierda" ) or \
+       ( jugadorDos.saque == True and jugadorUno.lado == "izquierda" ) :
+        pelota.lado = "izquierda"
+
+    if ( jugadorUno.saque == True and jugadorUno.lado == "derecha" ) or \
+       ( jugadorDos.saque == True and jugadorUno.lado == "derecha" ):
+        pelota.lado = "derecha"'''
+
+    pelota.cambiarLado()
 
 def dibujarCanvas():
 
@@ -164,6 +155,9 @@ while True:
 
             if evento.key == pygame.K_c:
                 cambiarColor()
+
+            if evento.key == pygame.K_s:
+                cambiarSaque()
 
 
         if evento.type == globales.QUIT:
