@@ -12,7 +12,7 @@ class Jugador:
     def restarPunto(self):
         self.puntos -=1
 
-    def agregarSet(self):
+    def anotarSet(self):
         self.sets +=1
 
     def restarSet(self):
@@ -124,20 +124,18 @@ class pelota:
             self.pos[0] = self.posFinal[0]
 
         elif self.pos[0] < self.posFinal[0] :
-            self.pos[0] += paso
+            self.pos[0] += paso * 1.5
 
         elif self.pos[0] > self.posFinal[0] :
-            self.pos[0] -= paso
+            self.pos[0] -= paso * 1.5
 
         difCentro = abs( 960 - self.posFinal[0] )
-        h = ( difCentro ** 2 - abs ( difCentro - self.pos[0] ) ** 2 )
+        h = ( difCentro ** 2 - abs ( 960 - self.pos[0] ) ** 2 )
+
         if h > 0:
             h = h ** 0.5
-        self.pos[1] = self.posFinal[1] - h
 
-
-
-        print( self.pos )
+        self.pos[1] = self.posFinal[1] - h / 2
 
     def cambiarLado(self):
 

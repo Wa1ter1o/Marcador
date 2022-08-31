@@ -11,9 +11,9 @@ pygame.font.init()
 #pygame.mouse.set_visible(False)
 
 frames = tiempo.Clock() 
-fps = 30                           #velocidad de actualización en frames por segundo
+fps = 10                            #velocidad de actualización en frames por segundo
 velAnim = 1                         #tiempo en segundos para hacer cada animación
-pasoAnim = 80                     #incremental de movimiento para todas las animaciones en pixels
+pasoAnim = 80                       #incremental de movimiento para todas las animaciones en pixels
 
 ancho, alto = 1920, 1080
 #obtener resolución de pantalla
@@ -22,12 +22,10 @@ infoPantalla = pygame.display.Info()
 #escala de pantalla
 escala = infoPantalla.current_w / ancho
 print("escala: " + str(escala))
-#escala = 0.83
+escala = 0.7
 
-ventana = pygame.display.set_mode( ( int( ancho  ), int( alto  ) ), pygame.FULLSCREEN)
+ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ) )
 canvas = pygame.Surface( (ancho, alto) )
-
-print( "canvas: " , canvas.get_rect()[2], canvas.get_rect()[3])
 
 pygame.display.set_caption( 'Marcador para tenis de mesa' )
 
@@ -48,12 +46,18 @@ jugadorDos = jugador.Jugador(pygame, "Jugador 2", False, rojo, "derecha")
 pelota = jugador.pelota( "izquierda" )
 
 sets = 1                        #sets a jugar
-puntos = 11                     #puntos a jugar por set
+puntosPorSet = 11                     #puntos a jugar por set
 cambioSaque = 2                 #número de saques para hacer cambio de saque
 lado = True
 saque = True
 
+puntosTotalesSet = 0
 
+estados = ( "inicio" , "jugando" , "nuevo set" , "pausa" , "fin" )
+
+estado = "inicio"
+
+tPres = { "1" : False , "esc" : False , }
 
 #-----------------------------FUNCIONES--------------------------------------------------------------------------------------
 
@@ -73,15 +77,53 @@ def dibujarJugadores():
 
     pygame.draw.circle( canvas, ( 250, 250, 250), ( pelota.pos ), 100 )
 
+def dibujarMenuInicio():
+
+    pygame.draw.rect( canvas, ( 240, 240, 240) , ( 720 , 100, 440, 880 ), 0, 50)
+
 def comprobarReglas():
-    print ("comprobando reglas")
+
+
+    if ( puntosPorSet - jugadorUno.puntos <= 1 ) and ( puntosPorSet - jugadorDos.puntos <= 1 ) :
+        cambiarSaque()
+    elif puntosTotalesSet % cambioSaque == 0:
+        cambiarSaque()
+
+    pInvParaGanar = ( puntosPorSet + 1 ) / 2 + 1
+    if ( jugadorUno.puntos == pInvParaGanar or jugadorDos.puntos == pInvParaGanar) and \
+        ( jugadorUno.puntos == 0 or jugadorDos.puntos == 0 ) :
+        anotarSet()
+
+    if ( (jugadorUno.puntos >= puntosPorSet ) or ( jugadorDos.puntos >= puntosPorSet ) ) \
+        and abs( jugadorUno.puntos - jugadorDos.puntos ) >= 2 :
+        anotarSet()
 
 
 def anotarPunto(jugador):
+    global puntosTotalesSet
 
     jugador.anotarPunto()
 
+    puntosTotalesSet += 1
+
     comprobarReglas()
+
+def anotarSet():
+
+    if jugadorUno.puntos > jugadorDos.puntos :
+        jugadorUno.anotarSet()
+
+    elif jugadorDos.puntos > jugadorUno.puntos :
+        jugadorDos.anotarSet()
+
+    iniciarMarcadores()
+
+def iniciarMarcadores():
+    global puntosTotalesSet
+
+    jugadorUno.puntos = 0
+    jugadorDos.puntos = 0
+    puntosTotalesSet = 0
 
 def cambiarLado():
     jugadorUno.cambiarLado()
@@ -90,7 +132,7 @@ def cambiarLado():
     pelota.cambiarLado()
 
 def cambiarColor():
-    global  color
+    global color
 
     if color:
         jugadorUno.cambiarColor(rojo)
@@ -106,14 +148,6 @@ def cambiarSaque():
 
     jugadorUno.saque = not jugadorUno.saque
     jugadorDos.saque = not jugadorDos.saque
-
-    '''if ( jugadorUno.saque == True and jugadorUno.lado == "izquierda" ) or \
-       ( jugadorDos.saque == True and jugadorUno.lado == "izquierda" ) :
-        pelota.lado = "izquierda"
-
-    if ( jugadorUno.saque == True and jugadorUno.lado == "derecha" ) or \
-       ( jugadorDos.saque == True and jugadorUno.lado == "derecha" ):
-        pelota.lado = "derecha"'''
 
     pelota.cambiarLado()
 
@@ -134,34 +168,53 @@ while True:
     mover()
     dibujarFondo()
     dibujarJugadores()
-    #dibujarPelota()
-    #dibujarCuadrados()
 
+    if estado == "inicio":
+        dibujarMenuInicio()
 
     for evento in eventos.get():
 
         if evento.type == pygame.KEYDOWN:
+
+            if evento.key == pygame.K_1:
+                tPres["1"] = True
+
             if evento.key == pygame.K_ESCAPE:
-                quit()
+                tPres["esc"] = True
 
             if evento.key == pygame.K_LEFT:
-                anotarPunto(jugadorUno)
+                if estado == "jugando" :
+                    anotarPunto(jugadorUno)
 
             if evento.key == pygame.K_RIGHT:
-                anotarPunto(jugadorDos) 
+                if estado == "jugando":
+                    anotarPunto(jugadorDos)
 
             if evento.key == pygame.K_SPACE:
-                cambiarLado()
+                if estado == "jugando":
+                    cambiarLado()
 
             if evento.key == pygame.K_c:
-                cambiarColor()
+                if estado == "jugando":
+                    cambiarColor()
 
             if evento.key == pygame.K_s:
-                cambiarSaque()
+                if estado == "jugando":
+                    cambiarSaque()
 
+        if evento.type == pygame.KEYUP:
+
+            if evento.key == pygame.K_1:
+                tPres["1"] = False
+
+            if evento.key == pygame.K_ESCAPE:
+                tPres["esc"] = False
 
         if evento.type == globales.QUIT:
             quit()
+
+    if tPres["1"] and tPres["esc"]:
+        quit()
 
     dibujarCanvas()
 
