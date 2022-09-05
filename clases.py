@@ -168,4 +168,36 @@ class pelota:
 
         self.asignarPosLado()
 
+class menu:
 
+    def generarImagen(self):
+        iu = {
+            "fuente": "OCR A Extended",
+            "tFNombre": 100, "tFDescripcion": 475, "tFDato": 70,
+            "tFCNombre": (250, 250, 250), "tFCDescripcion": ( 250, 250, 250 ), "tfCDato": (200, 200, 200),
+            "yNombre": 75, "yDescripcion": 150, "yEntreDatos": 600
+        }
+
+        imagen = self.pygame.Surface( ( self.tamaño[0] ,  self.tamaño[1] ), self.pygame.SRCALPHA, 32 )
+        imagen = imagen.convert_alpha()
+
+        imagen.blit( self.fondo, ( 0, 0 ) )
+
+        # Dibujado de nombre del menú
+        fuente = self.pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"]  ) )
+        imgTexto = fuente.render( self.nombre, True, iu["tFCNombre"] )
+        imagen.blit( imgTexto, ( int( self.tamaño[0] / 2 - ( imgTexto.get_rect()[2]  ) / 2 ), iu["yNombre"] ) )
+
+        return imagen
+
+    def __init__(self, pygame, nombre, tamaño = (1400, 1000) ):
+
+        self.pygame = pygame
+        self.nombre = nombre
+        self.tamaño = tamaño
+        self.pos = ( ( 960 - self.tamaño[0] / 2 ) , ( 540 - self.tamaño[1] / 2 ) )
+
+        self.fondo = self.pygame.image.load( "assets/img/menu.png" )
+
+
+        

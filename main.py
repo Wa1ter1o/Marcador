@@ -4,7 +4,7 @@ import pygame.locals as globales
 import pygame.event as eventos
 import pygame.time as tiempo
 
-import jugador
+import clases
 
 pygame.init()
 pygame.font.init()
@@ -40,22 +40,31 @@ color = True
 
 #*****************************VARIABLES DEL JUEGO****************************************************************************
 
-jugadorUno = jugador.Jugador(pygame, "Jugador 1", True, azul, "izquierda")
-jugadorDos = jugador.Jugador(pygame, "Jugador 2", False, rojo, "derecha")
+jugadores = [
+     { "nombre" : "Jugador Uno" , "tts" : None } ,
+     { "nombre" : "Jugador Dos" , "tts" : None } ,
+     { "nombre" : "Walter" , "tts" : None } ,
+     { "nombre" : "Lilly" , "tts" : None } 
+     ]
 
-pelota = jugador.pelota( "izquierda" )
+jugadorUno = clases.Jugador(pygame, "Jugador 1", True, azul, "izquierda")
+jugadorDos = clases.Jugador(pygame, "Jugador 2", False, rojo, "derecha")
+
+pelota = clases.pelota( "izquierda" )
+
+menuInicio = clases.menu(pygame, 'INICIO')
 
 sets = 1                        #sets a jugar
-puntosPorSet = 11                     #puntos a jugar por set
+puntosPorSet = 11               #puntos a jugar por set
 cambioSaque = 2                 #número de saques para hacer cambio de saque
 lado = True
 saque = True
 
 puntosTotalesSet = 0
 
-estados = ( "inicio" , "jugando" , "nuevo set" , "pausa" , "fin" )
+estados = ( "inicio" , "post juego" ,  "jugando" , "post nuevo set" , "nuevo set" , "pausa" , "fin" )
 
-estado = "inicio"
+estado = estados[ 0 ]
 
 tPres = { "1" : False , "esc" : False , }
 
@@ -77,9 +86,11 @@ def dibujarJugadores():
 
     pygame.draw.circle( canvas, ( 250, 250, 250), ( pelota.pos ), 100 )
 
-def dibujarMenuInicio():
+def dibujarMenu() :
 
-    pygame.draw.rect( canvas, ( 240, 240, 240) , ( 720 , 100, 440, 880 ), 0, 50)
+    if estado == estados[ 0 ] :
+        canvas.blit( menuInicio.generarImagen(), menuInicio.pos )
+
 
 def comprobarReglas():
 
@@ -168,9 +179,7 @@ while True:
     mover()
     dibujarFondo()
     dibujarJugadores()
-
-    if estado == "inicio":
-        dibujarMenuInicio()
+    dibujarMenu()
 
     for evento in eventos.get():
 
