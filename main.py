@@ -52,20 +52,18 @@ jugadores = [
      { "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } ,
      { "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } ,
      { "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') } ,
+     { "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } ,
      { "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') } 
      ]
 
+nombres = []
+for jugador in jugadores:
+    nombres.append(jugador['nombre'])
+
 #*****************************VARIABLES DEL JUEGO****************************************************************************
 
-jugadores = [
-     { "nombre" : "Jugador Uno" , "tts" : None } ,
-     { "nombre" : "Jugador Dos" , "tts" : None } ,
-     { "nombre" : "Walter" , "tts" : None } ,
-     { "nombre" : "Lilly" , "tts" : None } 
-     ]
-
-jugadorUno = clases.Jugador(pygame, "Jugador Uno", True, azul, "izquierda")
-jugadorDos = clases.Jugador(pygame, "Jugador Dos", False, rojo, "derecha")
+jugadorUno = clases.Jugador(pygame, "Jugador Uno", mixer.Sound('assets/sonidos/nombres/Jugador uno.wav'),True, azul, "izquierda")
+jugadorDos = clases.Jugador(pygame, "Jugador Dos", mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') ,False, rojo, "derecha")
 
 pelota = clases.pelota( "izquierda" )
 
@@ -87,14 +85,14 @@ tPres = { "1" : False , "esc" : False , }
 
 #////////////////////////////// LISTAS DE MENÚ //////////////////////////////////////////////////////////////////////////////
 
-indicesMenu = { 'inicio' : 1 }
+indicesMenu = { 'inicio' : 0 }
 
 datosInicio = [
     {
-        'titulo' : 'Jugador 1', 'dato' : jugadorUno.nombre
+        'titulo' : 'Jugador 1', 'dato' : jugadorUno.nombre, 'datos' : nombres, 'indice' : 0
     },
     {
-        'titulo' : 'Jugador 2', 'dato' : jugadorDos.nombre
+        'titulo' : 'Jugador 2', 'dato' : jugadorDos.nombre, 'datos' : nombres, 'indice' : 0
     },
     {
         'titulo' : 'Sets' , 'dato' : sets
@@ -103,7 +101,7 @@ datosInicio = [
         'titulo' : 'Pts. Por Set' , 'dato' : puntosPorSet
     },
     {
-        'titulo' : 'Saque Inicial' , 'dato' : jugadorUno.nombre
+        'titulo' : 'Saque Inicial' , 'dato' : jugadorUno.nombre, 'datos' : [jugadorUno.nombre, jugadorDos.nombre, 'Sorteo'], 'indice' : 0
     }
 
 ]
@@ -209,6 +207,129 @@ def dibujarCanvas():
     canvasEscalado = pygame.transform.scale( canvas, ( int( ancho * escala ), int( alto * escala ) ) )
     ventana.blit( canvasEscalado, ( 0, 0 ) )
 
+def procesarDerecha():
+    global sets, puntosPorSet
+
+    #Manejando menú inicio
+    if estado == estados[0]:
+
+        if indicesMenu['inicio'] == 0:
+
+            if datosInicio[0]['indice'] < len(datosInicio[0]['datos']) - 1 :
+
+                datosInicio[0]['indice'] += 1
+
+            else:
+
+                datosInicio[0]['indice'] = 0
+
+            jugadorUno.nombre = jugadores[datosInicio[0]['indice']]['nombre']
+            jugadorUno.tts = jugadores[datosInicio[0]['indice']]['tts']
+            jugadorUno.tts.play()
+            datosInicio[0]['dato'] = jugadorUno.nombre
+
+        if indicesMenu['inicio'] == 1:
+
+            if datosInicio[1]['indice'] < len(datosInicio[1]['datos']) - 1 :
+
+                datosInicio[1]['indice'] += 1
+
+            else:
+
+                datosInicio[1]['indice'] = 0
+
+            jugadorDos.nombre = jugadores[datosInicio[1]['indice']]['nombre']
+            jugadorDos.tts = jugadores[datosInicio[1]['indice']]['tts']
+            jugadorDos.tts.play()
+            datosInicio[1]['dato'] = jugadorDos.nombre
+
+        if indicesMenu['inicio'] == 2:
+            
+            if sets < 21:
+                sets += 2   
+                datosInicio[2]['dato'] = sets
+
+        if indicesMenu['inicio'] == 3:
+            
+            if puntosPorSet < 21:
+                puntosPorSet += 2
+                datosInicio[3]['dato'] = puntosPorSet
+
+def procesarIzquierda():
+    global sets, puntosPorSet
+
+    if estado == estados[0]:
+
+        if indicesMenu['inicio'] == 0:
+
+            if datosInicio[0]['indice'] > 0 :
+
+                datosInicio[0]['indice'] -= 1
+
+            else:
+
+                datosInicio[0]['indice'] = len(datosInicio[0]['datos']) - 1
+
+            jugadorUno.nombre = jugadores[datosInicio[0]['indice']]['nombre']
+            jugadorUno.tts = jugadores[datosInicio[0]['indice']]['tts']
+            jugadorUno.tts.play()
+            datosInicio[0]['dato'] = jugadorUno.nombre
+
+        if indicesMenu['inicio'] == 1:
+
+            if datosInicio[1]['indice'] > 0 :
+
+                datosInicio[1]['indice'] -= 1
+                
+            else:
+
+                datosInicio[1]['indice'] = len(datosInicio[1]['datos']) - 1
+
+            jugadorDos.nombre = jugadores[datosInicio[1]['indice']]['nombre']
+            jugadorDos.tts = jugadores[datosInicio[1]['indice']]['tts']
+            jugadorDos.tts.play()
+            datosInicio[1]['dato'] = jugadorDos.nombre
+
+        #Sets
+        if indicesMenu['inicio'] == 2:
+            
+            if sets > 1:
+                sets -= 2
+                datosInicio[2]['dato'] = sets
+
+        #Puntos por set
+        if indicesMenu['inicio'] == 3:
+            
+            if puntosPorSet > 7:
+                puntosPorSet -= 2
+                datosInicio[3]['dato'] = puntosPorSet
+
+def procesarAbajo():
+
+    if estado == estados[0]:
+
+        if indicesMenu['inicio'] < len(datosInicio) - 1:
+
+            indicesMenu['inicio'] += 1
+
+        else:
+            indicesMenu['inicio'] = 0
+
+        menuInicio.indice = indicesMenu['inicio']
+            
+def procesarArriba():
+
+    if estado == estados[0]:
+
+        if indicesMenu['inicio'] > 0 :
+
+            indicesMenu['inicio'] -= 1
+
+        else:
+            indicesMenu['inicio'] = len(datosInicio) - 1
+
+        menuInicio.indice = indicesMenu['inicio']
+
 def quit():
     pygame.mixer.quit()
     pygame.font.quit()
@@ -235,12 +356,16 @@ while True:
                 tPres["esc"] = True
 
             if evento.key == pygame.K_LEFT:
-                if estado == "jugando" :
-                    anotarPunto(jugadorUno)
+                procesarIzquierda()
 
             if evento.key == pygame.K_RIGHT:
-                if estado == "jugando":
-                    anotarPunto(jugadorDos)
+                procesarDerecha()
+
+            if evento.key == pygame.K_DOWN:
+                procesarAbajo()
+
+            if evento.key == pygame.K_UP:
+                procesarArriba()
 
             if evento.key == pygame.K_SPACE:
                 if estado == "jugando":

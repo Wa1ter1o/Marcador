@@ -39,7 +39,7 @@ class Jugador:
 
         # Dibujado de nombre de jugador
         fuente = self.pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"]  ) )
-        imgTexto = fuente.render( self.nombre, True, iu["tFCNombre"] )
+        imgTexto = fuente.render( str(self.nombre), True, iu["tFCNombre"] )
         imagen.blit( imgTexto, ( int( 900 / 2 - ( imgTexto.get_rect()[2]  ) / 2 ), iu["yNombre"] ) )
 
         # Dibujado de puntos
@@ -97,10 +97,11 @@ class Jugador:
             self.posFinal = posDerecha
 
 
-    def __init__(self, pygame, nombre, saque, fondo, lado):
+    def __init__(self, pygame, nombre, tts, saque, fondo, lado):
 
         self.pygame = pygame
         self.nombre = nombre
+        self.tts = tts
         self.puntos = 0
         self.sets = 0
         self.saque = saque
@@ -204,7 +205,8 @@ class menu:
             imgTexto = fuente.render( str( dato['dato'] ), True, iu['cFDato'] )
             imagen.blit( imgTexto, ( self.tamaño[0] / 2  +  iu['xMargen'] , iu['yDatos'] + iu['yEntreDatos'] * i ) )
 
-
+        # Dibujando marcador
+        self.pygame.draw.rect(imagen, (255, 145, 53), ( 40, iu['yDatos'] + iu['yEntreDatos'] * self.indice - 5, 1320, 100 ), 5, 25 )
 
         return imagen
 
