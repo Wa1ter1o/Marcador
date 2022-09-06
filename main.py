@@ -3,12 +3,15 @@ import time
 import pygame.locals as globales
 import pygame.event as eventos
 import pygame.time as tiempo
+from pygame import mixer
 
 import clases
 
 pygame.init()
 pygame.font.init()
-#pygame.mouse.set_visible(False)
+pygame.mixer.init()
+
+pygame.mouse.set_visible(False)
 
 frames = tiempo.Clock() 
 fps = 10                            #velocidad de actualización en frames por segundo
@@ -38,6 +41,20 @@ azul = pygame.image.load( "assets/img/azul.png" )
 rojo = pygame.image.load( "assets/img/rojo.png" )
 color = True
 
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& JUGADORES $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+jugadores = [
+     { "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } ,
+     { "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } ,
+     { "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } ,
+     { "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } ,
+     { "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } ,
+     { "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } ,
+     { "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } ,
+     { "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') } ,
+     { "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') } 
+     ]
+
 #*****************************VARIABLES DEL JUEGO****************************************************************************
 
 jugadores = [
@@ -47,18 +64,18 @@ jugadores = [
      { "nombre" : "Lilly" , "tts" : None } 
      ]
 
-jugadorUno = clases.Jugador(pygame, "Jugador 1", True, azul, "izquierda")
-jugadorDos = clases.Jugador(pygame, "Jugador 2", False, rojo, "derecha")
+jugadorUno = clases.Jugador(pygame, "Jugador Uno", True, azul, "izquierda")
+jugadorDos = clases.Jugador(pygame, "Jugador Dos", False, rojo, "derecha")
 
 pelota = clases.pelota( "izquierda" )
 
-menuInicio = clases.menu(pygame, 'INICIO')
 
 sets = 1                        #sets a jugar
 puntosPorSet = 11               #puntos a jugar por set
 cambioSaque = 2                 #número de saques para hacer cambio de saque
-lado = True
-saque = True
+lado = True                     #define de que lado se encuentra cada jugador
+saque = True                    #si es True el saque le corresponde al jugador uno
+
 
 puntosTotalesSet = 0
 
@@ -67,6 +84,31 @@ estados = ( "inicio" , "post juego" ,  "jugando" , "post nuevo set" , "nuevo set
 estado = estados[ 0 ]
 
 tPres = { "1" : False , "esc" : False , }
+
+#////////////////////////////// LISTAS DE MENÚ //////////////////////////////////////////////////////////////////////////////
+
+indicesMenu = { 'inicio' : 1 }
+
+datosInicio = [
+    {
+        'titulo' : 'Jugador 1', 'dato' : jugadorUno.nombre
+    },
+    {
+        'titulo' : 'Jugador 2', 'dato' : jugadorDos.nombre
+    },
+    {
+        'titulo' : 'Sets' , 'dato' : sets
+    },
+    {
+        'titulo' : 'Pts. Por Set' , 'dato' : puntosPorSet
+    },
+    {
+        'titulo' : 'Saque Inicial' , 'dato' : jugadorUno.nombre
+    }
+
+]
+
+menuInicio = clases.menu(pygame, 'INICIO', 'Espacio Para Continuar' ,datosInicio, indicesMenu['inicio'] )
 
 #-----------------------------FUNCIONES--------------------------------------------------------------------------------------
 
@@ -168,6 +210,7 @@ def dibujarCanvas():
     ventana.blit( canvasEscalado, ( 0, 0 ) )
 
 def quit():
+    pygame.mixer.quit()
     pygame.font.quit()
     pygame.quit()
     sys.exit()

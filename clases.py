@@ -1,5 +1,3 @@
-import math
-
 
 class Jugador:
 
@@ -173,9 +171,10 @@ class menu:
     def generarImagen(self):
         iu = {
             "fuente": "OCR A Extended",
-            "tFNombre": 100, "tFDescripcion": 475, "tFDato": 70,
-            "tFCNombre": (250, 250, 250), "tFCDescripcion": ( 250, 250, 250 ), "tfCDato": (200, 200, 200),
-            "yNombre": 75, "yDescripcion": 150, "yEntreDatos": 600
+            "tFNombre": 100, "tFDato": 70, 'tFInstruccion' : 50,
+            "cFNombre": (250, 250, 250), "cFDato": (200, 200, 200), 'cFInstruccion' : (250, 250, 250),
+            "yNombre": 70, "yDatos": 220, "yEntreDatos": 125, 'yInstruccion' : 900, 
+            "xMargen" : 20
         }
 
         imagen = self.pygame.Surface( ( self.tamaño[0] ,  self.tamaño[1] ), self.pygame.SRCALPHA, 32 )
@@ -185,16 +184,39 @@ class menu:
 
         # Dibujado de nombre del menú
         fuente = self.pygame.font.SysFont( iu["fuente"], int( iu["tFNombre"]  ) )
-        imgTexto = fuente.render( self.nombre, True, iu["tFCNombre"] )
+        imgTexto = fuente.render( self.nombre, True, iu["cFNombre"] )
         imagen.blit( imgTexto, ( int( self.tamaño[0] / 2 - ( imgTexto.get_rect()[2]  ) / 2 ), iu["yNombre"] ) )
+
+        # Dibujado de instrucciones
+        fuente = self.pygame.font.SysFont( iu["fuente"], int( iu["tFInstruccion"]  ) )
+        imgTexto = fuente.render( self.instruccion, True, iu["cFInstruccion"] )
+        imagen.blit( imgTexto, ( int( self.tamaño[0] / 2 - ( imgTexto.get_rect()[2]  ) / 2 ), iu["yInstruccion"] ) )
+
+
+        # Dibujando datos
+        fuente = self.pygame.font.SysFont( iu["fuente"], int( iu["tFDato"]  ) )
+
+        for i, dato in enumerate(self.datos) : 
+
+            imgTexto = fuente.render( dato['titulo'] + " :", True, iu['cFDato'] )
+            imagen.blit( imgTexto, ( self.tamaño[0] / 2 - imgTexto.get_rect()[2] , iu['yDatos'] + iu['yEntreDatos'] * i ) )
+
+            imgTexto = fuente.render( str( dato['dato'] ), True, iu['cFDato'] )
+            imagen.blit( imgTexto, ( self.tamaño[0] / 2  +  iu['xMargen'] , iu['yDatos'] + iu['yEntreDatos'] * i ) )
+
+
 
         return imagen
 
-    def __init__(self, pygame, nombre, tamaño = (1400, 1000) ):
+    def __init__(self, pygame, nombre, instruccion ,datos , indice, tamaño = (1400, 1000) ):
 
         self.pygame = pygame
         self.nombre = nombre
+        self.instruccion = instruccion
         self.tamaño = tamaño
+        self.datos = datos
+        self.indice = indice
+
         self.pos = ( ( 960 - self.tamaño[0] / 2 ) , ( 540 - self.tamaño[1] / 2 ) )
 
         self.fondo = self.pygame.image.load( "assets/img/menu.png" )
