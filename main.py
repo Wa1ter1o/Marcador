@@ -101,7 +101,7 @@ datosInicio = [
         'titulo' : 'Pts. Por Set' , 'dato' : puntosPorSet
     },
     {
-        'titulo' : 'Saque Inicial' , 'dato' : jugadorUno.nombre, 'datos' : [jugadorUno.nombre, jugadorDos.nombre, 'Sorteo'], 'indice' : 0
+        'titulo' : 'Saque Inicial' , 'dato' : jugadorUno.nombre, 'datos' : [ jugadorUno.nombre, jugadorDos.nombre, 'Sorteo'], 'indice' : 0
     }
 
 ]
@@ -254,6 +254,20 @@ def procesarDerecha():
             if puntosPorSet < 21:
                 puntosPorSet += 2
                 datosInicio[3]['dato'] = puntosPorSet
+
+        if indicesMenu['inicio'] == 4:
+            
+            if datosInicio[4]['indice'] < len(datosInicio[4]['datos']) - 1 :
+
+                datosInicio[4]['indice'] += 1
+
+            else:
+
+                datosInicio[4]['indice'] = 0
+
+            print ( (datosInicio[4]['datos'])['indice'] )
+            datosInicio[4]['dato'] = (datosInicio[4]['datos'])['indice']
+
 
 def procesarIzquierda():
     global sets, puntosPorSet
