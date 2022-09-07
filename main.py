@@ -33,7 +33,7 @@ canvas = pygame.Surface( (ancho, alto) )
 
 pygame.display.set_caption( 'Marcador para tenis de mesa' )
 
-#-------------------------Cargando Imágenes----------------------------------------------------------------------------------
+#-------------------------Cargando Imágenes y efectos de sonido--------------------------------------------------------------
 
 fondoOriginal = pygame.image.load( "assets/img/fondo.jpg" )
 fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
@@ -41,6 +41,13 @@ fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
 azul = pygame.image.load( "assets/img/azul.png" )
 rojo = pygame.image.load( "assets/img/rojo.png" )
 color = True
+
+audiofx = {
+    'bep' : mixer.Sound('assets/sonidos/fx/bep.wav') , 
+    'bep2' : mixer.Sound('assets/sonidos/fx/bep2.wav'),
+    'punto' : mixer.Sound('assets/sonidos/fx/punto.wav'),
+    'set' : mixer.Sound('assets/sonidos/fx/set.wav') 
+    }
 
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& JUGADORES $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -91,6 +98,9 @@ arbitro = False
 
 segInicioCuentaRegresiva = None
 contandoSegudos = False
+
+reproducir = []
+beeps = [ 0, 0, 0, 0 ]
 
 #////////////////////////////// LISTAS DE MENÚ //////////////////////////////////////////////////////////////////////////////
 
@@ -145,22 +155,39 @@ def dibujarMenu() :
 
 
 def cuentaRegresiva():
-    global segInicioCuentaRegresiva, contandoSegudos, estado
+    global segInicioCuentaRegresiva, contandoSegudos, estado, beeps
 
     if not contandoSegudos :
         segInicioCuentaRegresiva = milisegundos / 1000
         contandoSegudos = True
 
 
-    segFaltantes =  int ( 4 - (milisegundos / 1000 - segInicioCuentaRegresiva ) )
+    segFaltantes =  3.8 - (milisegundos / 1000 - segInicioCuentaRegresiva )
     
     fuente = pygame.font.SysFont( iu["fuente"], 1080 ) 
-    imgTexto = fuente.render(str( segFaltantes ), True, ( 255, 145, 53 ) )
+    imgTexto = fuente.render(str( int ( segFaltantes ) ), True, ( 255, 145, 53 ) )
     canvas.blit(imgTexto, ( ( ancho / 2 - ( imgTexto.get_rect()[2] ) / 2), alto / 2 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
 
-    if segFaltantes == 0 : 
-        estado = estados[3]
-        contandoSegudos = False
+    if segFaltantes < 4 and beeps[0] == 0 :
+        audiofx['bep'].play()
+        beeps[0] = 1
+        
+    if segFaltantes < 3 and beeps[1] == 0 :
+        audiofx['bep'].play()
+        beeps[1] = 1
+
+    if segFaltantes < 2 and beeps[2] == 0 :
+        audiofx['bep'].play()
+        beeps[2] = 1
+
+    if segFaltantes < 1 and beeps[3] == 0 :
+        audiofx['bep2'].play()
+        beeps[3] = 1
+    
+    if segFaltantes < 0.2 : 
+            estado = estados[3]
+            contandoSegudos = False
+            beeps = [ 0, 0, 0, 0]
 
 
 
@@ -176,18 +203,28 @@ def comprobarReglas():
     if ( jugadorUno.puntos == pInvParaGanar or jugadorDos.puntos == pInvParaGanar) and \
         ( jugadorUno.puntos == 0 or jugadorDos.puntos == 0 ) :
         anotarSet()
+        reproducir.append(audiofx['set'])
+        cambiarLado()
 
     if ( (jugadorUno.puntos >= puntosPorSet ) or ( jugadorDos.puntos >= puntosPorSet ) ) \
         and abs( jugadorUno.puntos - jugadorDos.puntos ) >= 2 :
         anotarSet()
+        reproducir.append(audiofx['set'])
+        cambiarLado()
 
 
 def anotarPunto(jugador):
     global puntosTotalesSet
 
-    jugador.anotarPunto()
+    if jugador == 1:
+            jugadorUno.anotarPunto()
+
+    if jugador == 2:
+            jugadorDos.anotarPunto()
 
     puntosTotalesSet += 1
+
+    audiofx['punto'].play()
 
     comprobarReglas()
 
@@ -209,10 +246,13 @@ def iniciarMarcadores():
     puntosTotalesSet = 0
 
 def cambiarLado():
+    global lado
+
     jugadorUno.cambiarLado()
     jugadorDos.cambiarLado()
 
     pelota.cambiarLado()
+    lado = not lado
 
 def cambiarColor():
     global color
@@ -436,6 +476,31 @@ def procesarContinuar():
     
     print ( estado )
 
+def procesarPuntoIzquierda():
+
+    # si estado es jugando
+    if estado == estados[3] :
+        if lado :
+            anotarPunto(1)
+        else:
+            anotarPunto(2)
+
+def procesarPuntoDerecha():
+
+    # si estado es jugando
+    if estado == estados[3] :
+        if lado :
+            anotarPunto(2)
+        else:
+            anotarPunto(1)
+
+def reproducirCola():
+    global reproducir
+
+    if len(reproducir) > 0 and not mixer.get_busy() :
+        audio = reproducir.pop(0)
+        audio.play()
+
 def quit():
     pygame.mixer.quit()
     pygame.font.quit()
@@ -451,6 +516,7 @@ while True:
     dibujarFondo()
     dibujarJugadores()
     dibujarMenu()
+    reproducirCola()
 
     for evento in eventos.get():
 
@@ -476,6 +542,12 @@ while True:
 
             if evento.key == pygame.K_SPACE:
                 procesarContinuar()
+
+            if evento.key == pygame.K_LSHIFT:
+                procesarPuntoIzquierda()
+
+            if evento.key == pygame.K_RSHIFT:
+                procesarPuntoDerecha()
 
             if evento.key == pygame.K_c:
                 if estado == "jugando":
