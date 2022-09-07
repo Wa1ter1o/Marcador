@@ -1,5 +1,4 @@
 import pygame, sys, random
-import time
 import pygame.locals as globales
 import pygame.event as eventos
 import pygame.time as tiempo
@@ -14,9 +13,11 @@ pygame.mixer.init()
 pygame.mouse.set_visible(False)
 
 frames = tiempo.Clock() 
-fps = 10                            #velocidad de actualización en frames por segundo
+fps = 30                            #velocidad de actualización en frames por segundo
 velAnim = 1                         #tiempo en segundos para hacer cada animación
 pasoAnim = 80                       #incremental de movimiento para todas las animaciones en pixels
+
+milisegundos = tiempo.get_ticks()
 
 ancho, alto = 1920, 1080
 #obtener resolución de pantalla
@@ -62,6 +63,8 @@ for jugador in jugadores:
 
 #*****************************VARIABLES DEL JUEGO****************************************************************************
 
+iu = { 'fuente' : 'OCR A Extended' }
+
 jugadorUno = clases.Jugador(pygame, "Jugador Uno", mixer.Sound('assets/sonidos/nombres/Jugador uno.wav'),True, azul, "izquierda")
 jugadorDos = clases.Jugador(pygame, "Jugador Dos", mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') ,False, rojo, "derecha")
 
@@ -77,11 +80,17 @@ saque = True                    #si es True el saque le corresponde al jugador u
 
 puntosTotalesSet = 0
 
-estados = ( "inicio" , "post juego" ,  "jugando" , "post nuevo set" , "nuevo set" , "pausa" , "fin" )
+estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , "nuevo set" , "pausa" , "fin" )
 
 estado = estados[ 0 ]
 
 tPres = { "1" : False , "esc" : False , }
+
+botones = False
+arbitro = False
+
+segInicioCuentaRegresiva = None
+contandoSegudos = False
 
 #////////////////////////////// LISTAS DE MENÚ //////////////////////////////////////////////////////////////////////////////
 
@@ -130,6 +139,29 @@ def dibujarMenu() :
 
     if estado == estados[ 0 ] :
         canvas.blit( menuInicio.generarImagen(), menuInicio.pos )
+
+    if estado == estados[ 2 ] :
+        cuentaRegresiva()
+
+
+def cuentaRegresiva():
+    global segInicioCuentaRegresiva, contandoSegudos, estado
+
+    if not contandoSegudos :
+        segInicioCuentaRegresiva = milisegundos / 1000
+        contandoSegudos = True
+
+
+    segFaltantes =  int ( 4 - (milisegundos / 1000 - segInicioCuentaRegresiva ) )
+    
+    fuente = pygame.font.SysFont( iu["fuente"], 1080 ) 
+    imgTexto = fuente.render(str( segFaltantes ), True, ( 255, 145, 53 ) )
+    canvas.blit(imgTexto, ( ( ancho / 2 - ( imgTexto.get_rect()[2] ) / 2), alto / 2 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
+
+    if segFaltantes == 0 : 
+        estado = estados[3]
+        contandoSegudos = False
+
 
 
 def comprobarReglas():
@@ -213,6 +245,7 @@ def procesarDerecha():
     #Manejando menú inicio
     if estado == estados[0]:
 
+        #Jugador Uno
         if indicesMenu['inicio'] == 0:
 
             if datosInicio[0]['indice'] < len(datosInicio[0]['datos']) - 1 :
@@ -227,8 +260,11 @@ def procesarDerecha():
             jugadorUno.tts = jugadores[datosInicio[0]['indice']]['tts']
             jugadorUno.tts.play()
             datosInicio[0]['dato'] = jugadorUno.nombre
+            datosInicio[4]['datos'][0] = jugadorUno.nombre  # Para menú de saque inicial
+            datosInicio[4]['dato'] = datosInicio[4]['datos'][datosInicio[4]['indice']]  # Para menú de saque inicial
 
-        if indicesMenu['inicio'] == 1:
+        #Jugador dos
+        elif indicesMenu['inicio'] == 1:
 
             if datosInicio[1]['indice'] < len(datosInicio[1]['datos']) - 1 :
 
@@ -242,20 +278,25 @@ def procesarDerecha():
             jugadorDos.tts = jugadores[datosInicio[1]['indice']]['tts']
             jugadorDos.tts.play()
             datosInicio[1]['dato'] = jugadorDos.nombre
+            datosInicio[4]['datos'][1] = jugadorDos.nombre # Para menú de inicio, saque incial
+            datosInicio[4]['dato'] = datosInicio[4]['datos'][datosInicio[4]['indice']]  # Para menú de inicio, saque inicial
 
-        if indicesMenu['inicio'] == 2:
+        # Sets del juego
+        elif indicesMenu['inicio'] == 2:
             
             if sets < 21:
                 sets += 2   
                 datosInicio[2]['dato'] = sets
 
-        if indicesMenu['inicio'] == 3:
+        # Puntos por juego
+        elif indicesMenu['inicio'] == 3:
             
             if puntosPorSet < 21:
                 puntosPorSet += 2
                 datosInicio[3]['dato'] = puntosPorSet
 
-        if indicesMenu['inicio'] == 4:
+        # Saque inicial
+        elif indicesMenu['inicio'] == 4:
             
             if datosInicio[4]['indice'] < len(datosInicio[4]['datos']) - 1 :
 
@@ -265,13 +306,22 @@ def procesarDerecha():
 
                 datosInicio[4]['indice'] = 0
 
-            print ( (datosInicio[4]['datos'])['indice'] )
-            datosInicio[4]['dato'] = (datosInicio[4]['datos'])['indice']
+            datosInicio[4]['dato'] = datosInicio[4]['datos'][datosInicio[4]['indice']] 
 
+            if datosInicio[4]['dato'] == jugadorUno.nombre:  
+                
+                if  not jugadorUno.saque :
+                    cambiarSaque()
+
+            elif datosInicio[4]['dato'] == jugadorDos.nombre:  
+                
+                if  not jugadorDos.saque :
+                    cambiarSaque()
 
 def procesarIzquierda():
     global sets, puntosPorSet
 
+    #Jugador uno
     if estado == estados[0]:
 
         if indicesMenu['inicio'] == 0:
@@ -288,8 +338,13 @@ def procesarIzquierda():
             jugadorUno.tts = jugadores[datosInicio[0]['indice']]['tts']
             jugadorUno.tts.play()
             datosInicio[0]['dato'] = jugadorUno.nombre
+            datosInicio[4]['datos'][0] = jugadorUno.nombre #Asignación de dato para cambio de saque
+            datosInicio[4]['dato'] = datosInicio[4]['datos'][datosInicio[4]['indice']]  # Para menú de inicio, saque inicial
 
-        if indicesMenu['inicio'] == 1:
+
+
+        #jugador Dos
+        elif indicesMenu['inicio'] == 1:
 
             if datosInicio[1]['indice'] > 0 :
 
@@ -303,20 +358,46 @@ def procesarIzquierda():
             jugadorDos.tts = jugadores[datosInicio[1]['indice']]['tts']
             jugadorDos.tts.play()
             datosInicio[1]['dato'] = jugadorDos.nombre
+            datosInicio[4]['datos'][1] = jugadorDos.nombre #Asignación de dato para cambio de saque
+            datosInicio[4]['dato'] = datosInicio[4]['datos'][datosInicio[4]['indice']]  # Para menú de inicio, saque inicial
+
 
         #Sets
-        if indicesMenu['inicio'] == 2:
+        elif indicesMenu['inicio'] == 2:
             
             if sets > 1:
                 sets -= 2
                 datosInicio[2]['dato'] = sets
 
         #Puntos por set
-        if indicesMenu['inicio'] == 3:
+        elif indicesMenu['inicio'] == 3:
             
             if puntosPorSet > 7:
                 puntosPorSet -= 2
                 datosInicio[3]['dato'] = puntosPorSet
+
+        #saque inicial
+        elif indicesMenu['inicio'] == 4:
+            
+            if datosInicio[4]['indice'] > 0 :
+
+                datosInicio[4]['indice'] -= 1
+
+            else:
+
+                datosInicio[4]['indice'] = len(datosInicio[4]['datos']) - 1
+
+            datosInicio[4]['dato'] = datosInicio[4]['datos'][datosInicio[4]['indice']] 
+
+            if datosInicio[4]['dato'] == jugadorUno.nombre:  
+                
+                if  not jugadorUno.saque :
+                    cambiarSaque()
+
+            elif datosInicio[4]['dato'] == jugadorDos.nombre:  
+                
+                if  not jugadorDos.saque :
+                    cambiarSaque()
 
 def procesarAbajo():
 
@@ -344,6 +425,17 @@ def procesarArriba():
 
         menuInicio.indice = indicesMenu['inicio']
 
+def procesarContinuar():
+    global estado
+
+    if estado == estados[0]:
+        estado = estados[1]
+
+    elif estado == estados[1]:
+        estado = estados[2]
+    
+    print ( estado )
+
 def quit():
     pygame.mixer.quit()
     pygame.font.quit()
@@ -354,6 +446,7 @@ def quit():
 
 while True:
 
+    milisegundos = tiempo.get_ticks()
     mover()
     dibujarFondo()
     dibujarJugadores()
@@ -382,8 +475,7 @@ while True:
                 procesarArriba()
 
             if evento.key == pygame.K_SPACE:
-                if estado == "jugando":
-                    cambiarLado()
+                procesarContinuar()
 
             if evento.key == pygame.K_c:
                 if estado == "jugando":

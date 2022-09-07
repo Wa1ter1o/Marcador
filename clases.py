@@ -205,7 +205,7 @@ class menu:
             imgTexto = fuente.render( str( dato['dato'] ), True, iu['cFDato'] )
             imagen.blit( imgTexto, ( self.tamaño[0] / 2  +  iu['xMargen'] , iu['yDatos'] + iu['yEntreDatos'] * i ) )
 
-        # Dibujando marcador
+        # Dibujando indicador
         self.pygame.draw.rect(imagen, (255, 145, 53), ( 40, iu['yDatos'] + iu['yEntreDatos'] * self.indice - 5, 1320, 100 ), 5, 25 )
 
         return imagen
