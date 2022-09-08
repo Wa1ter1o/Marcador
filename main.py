@@ -53,15 +53,22 @@ audiofx = {
 carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
 rutasMusica = []
 nombreCarpetas = []
+indiceMusicaFondo = 0
 
 for carpeta in carpetasMusicaFondo:
     rutasMusica.append(list(Path(carpeta).iterdir()))
     cadena = str(carpeta)
+    nombreInvertido = ''
     nombre = ''
     for letra in reversed(cadena):
-        if letra == "/" :
+        if letra == '\\' :
             break
+
+        nombreInvertido = nombreInvertido + letra
+
+    for letra in reversed(nombreInvertido):
         nombre = nombre + letra
+
     nombreCarpetas.append(nombre)
 
 print (nombreCarpetas)
@@ -170,6 +177,26 @@ def dibujarMenu() :
     if estado == estados[ 2 ] :
         cuentaRegresiva()
 
+def tocarMusica() :
+
+    mixer.music.play()
+
+def pausarMusica() :
+
+    mixer.music.pause()
+
+def seguirMusica():
+
+    mixer.music.unpause()
+
+
+def reproducirCola():
+    global reproducir
+
+    if len(reproducir) > 0 and not mixer.get_busy() :
+        audio = reproducir.pop(0)
+        audio.play()
+
 
 def cuentaRegresiva():
     global segInicioCuentaRegresiva, contandoSegudos, estado, beeps
@@ -214,9 +241,12 @@ def cuentaRegresiva():
         beeps[3] = 1
     
     if segFaltantes < 0.2 : 
-            estado = estados[3]
-            contandoSegudos = False
-            beeps = [ 0, 0, 0, 0]
+        estado = estados[3]
+        contandoSegudos = False
+        beeps = [ 0, 0, 0, 0]
+        mixer.music.load(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)])
+        #mixer.music.load(rutasMusica[0][0])
+        tocarMusica()
 
 
 
@@ -271,7 +301,11 @@ def iniciarMarcadores():
     global puntosTotalesSet
 
     jugadorUno.puntos = 0
+    jugadorUno.sets = 0
+
     jugadorDos.puntos = 0
+    jugadorDos.sets = 0
+
     puntosTotalesSet = 0
 
 def cambiarLado():
@@ -497,12 +531,33 @@ def procesarArriba():
 def procesarContinuar():
     global estado
 
-    if estado == estados[0]:
-        estado = estados[1]
+#                0             1            2          3              4              5           6         7
+# estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , "pausa" , "post fin" , "fin" )
 
-    elif estado == estados[1]:
-        estado = estados[2]
+    if estado == estados[0]:    # Inicio
+        estado = estados[1]     # Post juego
+
+    elif estado == estados[1]:  # Post juego
+        estado = estados[2]     # cuenta
+
+    elif estado == estados[3]:  # jugando
+        estado = estados[5]     # pausa
+        pausarMusica()
+
+    elif estado == estados[5]:  # pausa
+        estado = estados[3]     # jugando
+        seguirMusica()
     
+    elif estado == estados[4]:  # post nuevo set
+        estado = estados[2]     # cuenta
+
+    elif estado == estados[6]:  # post fin
+        estado = estados[7]     # fin
+
+    elif estado == estados[7]:  # fin
+        estado = estados[0]     # inicio
+        iniciarMarcadores()
+
     print ( estado )
 
 def procesarPuntoIzquierda():
@@ -522,13 +577,6 @@ def procesarPuntoDerecha():
             anotarPunto(2)
         else:
             anotarPunto(1)
-
-def reproducirCola():
-    global reproducir
-
-    if len(reproducir) > 0 and not mixer.get_busy() :
-        audio = reproducir.pop(0)
-        audio.play()
 
 def quit():
     pygame.mixer.quit()
