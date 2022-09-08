@@ -1,4 +1,5 @@
 import pygame, sys, random
+from pathlib import Path
 import pygame.locals as globales
 import pygame.event as eventos
 import pygame.time as tiempo
@@ -49,6 +50,22 @@ audiofx = {
     'set' : mixer.Sound('assets/sonidos/fx/set.wav') 
     }
 
+carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
+rutasMusica = []
+nombreCarpetas = []
+
+for carpeta in carpetasMusicaFondo:
+    rutasMusica.append(list(Path(carpeta).iterdir()))
+    cadena = str(carpeta)
+    nombre = ''
+    for letra in reversed(cadena):
+        if letra == "/" :
+            break
+        nombre = nombre + letra
+    nombreCarpetas.append(nombre)
+
+print (nombreCarpetas)
+
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& JUGADORES $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 jugadores = [
@@ -87,7 +104,7 @@ saque = True                    #si es True el saque le corresponde al jugador u
 
 puntosTotalesSet = 0
 
-estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , "nuevo set" , "pausa" , "fin" )
+estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , "pausa" , "post fin" , "fin" )
 
 estado = estados[ 0 ]
 
@@ -170,18 +187,30 @@ def cuentaRegresiva():
 
     if segFaltantes < 4 and beeps[0] == 0 :
         audiofx['bep'].play()
+        if datosInicio[4]['indice'] == 2:
+            if random.randint(0, 1) == 1:
+                cambiarSaque()
         beeps[0] = 1
         
     if segFaltantes < 3 and beeps[1] == 0 :
         audiofx['bep'].play()
+        if datosInicio[4]['indice'] == 2:
+            if random.randint(0, 1) == 1:
+                cambiarSaque()
         beeps[1] = 1
 
     if segFaltantes < 2 and beeps[2] == 0 :
         audiofx['bep'].play()
+        if datosInicio[4]['indice'] == 2:
+            if random.randint(0, 1) == 1:
+                cambiarSaque()
         beeps[2] = 1
 
     if segFaltantes < 1 and beeps[3] == 0 :
         audiofx['bep2'].play()
+        if datosInicio[4]['indice'] == 2:
+            if random.randint(0, 1) == 1:
+                cambiarSaque()
         beeps[3] = 1
     
     if segFaltantes < 0.2 : 
