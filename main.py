@@ -43,9 +43,9 @@ azul = pygame.image.load( "assets/img/azul.png" )
 rojo = pygame.image.load( "assets/img/rojo.png" )
 color = True
 
-volMusica = 1
-volNarracion = 1
-volEfectos = 1
+volMusica = 10
+volNarracion = 10
+volEfectos = 10
 
 musica = True
 narracion = True
@@ -161,13 +161,16 @@ menuInicio = clases.menu(pygame, 'INICIO', 'Espacio Para Continuar', datosInicio
 
 datosPausa = [
     {
-        'titulo' : 'Vol de música' , 'dato' : volMusica * 10
+        'titulo' : 'Vol de música' , 'dato' : volMusica
     },
     {
-        'titulo' : 'vol de voz' , 'dato' : volNarracion * 10
+        'titulo' : 'vol de voz' , 'dato' : volNarracion
     },
     {
-        'titulo' : 'vol efectos' , 'dato' : volEfectos * 10
+        'titulo' : 'vol efectos' , 'dato' : volEfectos
+    },
+    {
+        'titulo' : 'Música' , 'dato' : nombreCarpetas[indiceMusicaFondo]
     }
 
 ]
@@ -221,8 +224,11 @@ def reproducirCola():
 
     if len(reproducir) > 0 and not mixer.get_busy() :
         audio = reproducir.pop(0)
+        audio.set_volume( volNarracion / 10 )
         audio.play()
 
+def setearVolumen():
+    mixer.music.set_volume(volMusica / 10)
 
 def cuentaRegresiva():
     global segInicioCuentaRegresiva, contandoSegudos, estado, beeps
@@ -288,7 +294,8 @@ def comprobarReglas():
     if ( jugadorUno.puntos == pInvParaGanar or jugadorDos.puntos == pInvParaGanar) and \
         ( jugadorUno.puntos == 0 or jugadorDos.puntos == 0 ) :
         anotarSet()
-        reproducir.append(audiofx['set'])
+        audiofx['set'].set_volume(volEfectos / 10)
+        audiofx['set'].play()
         cambiarLado()
 
     if ( (jugadorUno.puntos >= puntosPorSet ) or ( jugadorDos.puntos >= puntosPorSet ) ) \
@@ -369,7 +376,7 @@ def dibujarCanvas():
     ventana.blit( canvasEscalado, ( 0, 0 ) )
 
 def procesarDerecha():
-    global sets, puntosPorSet
+    global sets, puntosPorSet, volMusica
 
     #Manejando menú inicio
     if estado == estados[0]:
@@ -447,8 +454,28 @@ def procesarDerecha():
                 if  not jugadorDos.saque :
                     cambiarSaque()
 
+    elif estado == estados[5]: # pausa
+        
+        if indicesMenu['pausa'] == 0 : #Volumen de Música
+            if volMusica < 10 :
+                volMusica += 1
+                datosPausa[0]['dato'] = volMusica
+            setearVolumen()
+
+        if indicesMenu['pausa'] == 1 : #Volumen de Narración
+            if volNarracion < 10 :
+                volNarracion += 1
+                datosPausa[1]['dato'] = volNarracion
+
+        if indicesMenu['pausa'] == 2 : #Volumen de efectos
+            if volEfectos < 10 :
+                volEfectos += 1
+                datosPausa[2]['dato'] = volEfectos
+
+
+
 def procesarIzquierda():
-    global sets, puntosPorSet
+    global sets, puntosPorSet, volMusica
 
     if estado == estados[0]: # Inicio
 
@@ -527,6 +554,18 @@ def procesarIzquierda():
                 
                 if  not jugadorDos.saque :
                     cambiarSaque()
+
+    elif estado == estados[5]: # Pausa
+
+        if indicesMenu['pausa'] == 0 : #Volumen de música
+
+            if volMusica > 0 :
+                volMusica -= 1
+                datosPausa[0]['dato'] = volMusica
+                if volMusica == 0 :
+                    musica == False
+
+            setearVolumen()
 
 def procesarAbajo():
 
@@ -635,6 +674,10 @@ def quit():
     sys.exit()
 
 #----------------------------------CICLO PRINCIPAL---------------------------------------------------------------------------    
+
+setearVolumen()
+dibujarFondo()
+
 
 while True:
 
