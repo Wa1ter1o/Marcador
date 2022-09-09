@@ -43,6 +43,14 @@ azul = pygame.image.load( "assets/img/azul.png" )
 rojo = pygame.image.load( "assets/img/rojo.png" )
 color = True
 
+volMusica = 1
+volNarracion = 1
+volEfectos = 1
+
+musica = True
+narracion = True
+efectos = True
+
 audiofx = {
     'bep' : mixer.Sound('assets/sonidos/fx/bep.wav') , 
     'bep2' : mixer.Sound('assets/sonidos/fx/bep2.wav'),
@@ -128,7 +136,7 @@ beeps = [ 0, 0, 0, 0 ]
 
 #////////////////////////////// LISTAS DE MENÚ //////////////////////////////////////////////////////////////////////////////
 
-indicesMenu = { 'inicio' : 0 }
+indicesMenu = { 'inicio' : 0 , 'pausa' : 0 }
 
 datosInicio = [
     {
@@ -149,7 +157,22 @@ datosInicio = [
 
 ]
 
-menuInicio = clases.menu(pygame, 'INICIO', 'Espacio Para Continuar' ,datosInicio, indicesMenu['inicio'] )
+menuInicio = clases.menu(pygame, 'INICIO', 'Espacio Para Continuar', datosInicio, indicesMenu['inicio'] )
+
+datosPausa = [
+    {
+        'titulo' : 'Vol de música' , 'dato' : volMusica * 10
+    },
+    {
+        'titulo' : 'vol de voz' , 'dato' : volNarracion * 10
+    },
+    {
+        'titulo' : 'vol efectos' , 'dato' : volEfectos * 10
+    }
+
+]
+
+menuPausa = clases.menu(pygame, 'PAUSA', 'Espacio Para Continuar', datosPausa, indicesMenu['pausa'] )
 
 #-----------------------------FUNCIONES--------------------------------------------------------------------------------------
 
@@ -176,6 +199,9 @@ def dibujarMenu() :
 
     if estado == estados[ 2 ] :
         cuentaRegresiva()
+
+    if estado == estados[5] :
+        canvas.blit( menuPausa.generarImagen(), menuPausa.pos)
 
 def tocarMusica() :
 
@@ -424,9 +450,9 @@ def procesarDerecha():
 def procesarIzquierda():
     global sets, puntosPorSet
 
-    #Jugador uno
-    if estado == estados[0]:
+    if estado == estados[0]: # Inicio
 
+        #Jugador uno
         if indicesMenu['inicio'] == 0:
 
             if datosInicio[0]['indice'] > 0 :
@@ -504,7 +530,7 @@ def procesarIzquierda():
 
 def procesarAbajo():
 
-    if estado == estados[0]:
+    if estado == estados[0]: # Inicio
 
         if indicesMenu['inicio'] < len(datosInicio) - 1:
 
@@ -514,7 +540,19 @@ def procesarAbajo():
             indicesMenu['inicio'] = 0
 
         menuInicio.indice = indicesMenu['inicio']
-            
+
+    if estado == estados[5]: # Pausa
+
+        if indicesMenu['pausa'] < len(datosPausa) - 1:
+
+            indicesMenu['pausa'] += 1
+
+        else:
+            indicesMenu['pausa'] = 0
+
+        menuPausa.indice = indicesMenu['pausa']
+
+
 def procesarArriba():
 
     if estado == estados[0]:
@@ -527,6 +565,18 @@ def procesarArriba():
             indicesMenu['inicio'] = len(datosInicio) - 1
 
         menuInicio.indice = indicesMenu['inicio']
+
+    if estado == estados[5]: # Pausa
+
+        if indicesMenu['pausa'] > 0:
+
+            indicesMenu['pausa'] -= 1
+
+        else:
+            indicesMenu['pausa'] = len(datosPausa) - 1
+
+        menuPausa.indice = indicesMenu['pausa']
+
 
 def procesarContinuar():
     global estado
