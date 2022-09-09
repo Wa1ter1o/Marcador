@@ -171,7 +171,11 @@ datosPausa = [
     },
     {
         'titulo' : 'Música' , 'dato' : nombreCarpetas[indiceMusicaFondo]
+    },
+    {
+        'titulo' : 'Nuevo Juego' , 'dato' : 'No'
     }
+    
 
 ]
 
@@ -208,7 +212,9 @@ def dibujarMenu() :
 
 def tocarMusica() :
 
-    mixer.music.play()
+    if musica :
+        mixer.music.load(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)])
+        mixer.music.play(-1)
 
 def pausarMusica() :
 
@@ -216,19 +222,24 @@ def pausarMusica() :
 
 def seguirMusica():
 
-    mixer.music.unpause()
+    if musica :
+        mixer.music.unpause()
+
+def setearVolumen():
+
+    mixer.music.set_volume(volMusica / 10)
 
 
 def reproducirCola():
     global reproducir
+
+
 
     if len(reproducir) > 0 and not mixer.get_busy() :
         audio = reproducir.pop(0)
         audio.set_volume( volNarracion / 10 )
         audio.play()
 
-def setearVolumen():
-    mixer.music.set_volume(volMusica / 10)
 
 def cuentaRegresiva():
     global segInicioCuentaRegresiva, contandoSegudos, estado, beeps
@@ -245,6 +256,7 @@ def cuentaRegresiva():
     canvas.blit(imgTexto, ( ( ancho / 2 - ( imgTexto.get_rect()[2] ) / 2), alto / 2 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
 
     if segFaltantes < 4 and beeps[0] == 0 :
+        audiofx['bep'].set_volume(volEfectos)
         audiofx['bep'].play()
         if datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -252,6 +264,7 @@ def cuentaRegresiva():
         beeps[0] = 1
         
     if segFaltantes < 3 and beeps[1] == 0 :
+        audiofx['bep'].set_volume(volEfectos)
         audiofx['bep'].play()
         if datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -259,6 +272,7 @@ def cuentaRegresiva():
         beeps[1] = 1
 
     if segFaltantes < 2 and beeps[2] == 0 :
+        audiofx['bep'].set_volume(volEfectos)
         audiofx['bep'].play()
         if datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -266,6 +280,7 @@ def cuentaRegresiva():
         beeps[2] = 1
 
     if segFaltantes < 1 and beeps[3] == 0 :
+        audiofx['bep2'].set_volume(volEfectos)
         audiofx['bep2'].play()
         if datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -276,8 +291,8 @@ def cuentaRegresiva():
         estado = estados[3]
         contandoSegudos = False
         beeps = [ 0, 0, 0, 0]
-        mixer.music.load(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)])
-        #mixer.music.load(rutasMusica[0][0])
+        
+        setearVolumen()
         tocarMusica()
 
 
@@ -294,14 +309,11 @@ def comprobarReglas():
     if ( jugadorUno.puntos == pInvParaGanar or jugadorDos.puntos == pInvParaGanar) and \
         ( jugadorUno.puntos == 0 or jugadorDos.puntos == 0 ) :
         anotarSet()
-        audiofx['set'].set_volume(volEfectos / 10)
-        audiofx['set'].play()
         cambiarLado()
 
     if ( (jugadorUno.puntos >= puntosPorSet ) or ( jugadorDos.puntos >= puntosPorSet ) ) \
         and abs( jugadorUno.puntos - jugadorDos.puntos ) >= 2 :
         anotarSet()
-        reproducir.append(audiofx['set'])
         cambiarLado()
 
 
@@ -309,13 +321,18 @@ def anotarPunto(jugador):
     global puntosTotalesSet
 
     if jugador == 1:
-            jugadorUno.anotarPunto()
+        jugadorUno.anotarPunto()
+        if narracion :
+            reproducir.append(jugadorUno.tts)
 
     if jugador == 2:
-            jugadorDos.anotarPunto()
+        jugadorDos.anotarPunto()
+        if narracion :
+            reproducir.append(jugadorDos.tts)
 
     puntosTotalesSet += 1
 
+    audiofx['punto'].set_volume( volEfectos / 10 )
     audiofx['punto'].play()
 
     comprobarReglas()
@@ -328,7 +345,10 @@ def anotarSet():
     elif jugadorDos.puntos > jugadorUno.puntos :
         jugadorDos.anotarSet()
 
-    iniciarMarcadores()
+    iniciarPuntos()
+
+    audiofx['set'].set_volume(volEfectos / 10)
+    audiofx['set'].play()
 
 def iniciarMarcadores():
     global puntosTotalesSet
@@ -340,6 +360,16 @@ def iniciarMarcadores():
     jugadorDos.sets = 0
 
     puntosTotalesSet = 0
+
+def iniciarPuntos():
+    global puntosTotalesSet
+
+    jugadorUno.puntos = 0
+
+    jugadorDos.puntos = 0
+
+    puntosTotalesSet = 0
+
 
 def cambiarLado():
     global lado
@@ -376,7 +406,7 @@ def dibujarCanvas():
     ventana.blit( canvasEscalado, ( 0, 0 ) )
 
 def procesarDerecha():
-    global sets, puntosPorSet, volMusica
+    global sets, puntosPorSet, volMusica, volNarracion, volEfectos, musica, narracion, efectos, indiceMusicaFondo
 
     #Manejando menú inicio
     if estado == estados[0]:
@@ -460,22 +490,38 @@ def procesarDerecha():
             if volMusica < 10 :
                 volMusica += 1
                 datosPausa[0]['dato'] = volMusica
+            musica = True
             setearVolumen()
 
-        if indicesMenu['pausa'] == 1 : #Volumen de Narración
+        elif indicesMenu['pausa'] == 1 : #Volumen de Narración
             if volNarracion < 10 :
                 volNarracion += 1
                 datosPausa[1]['dato'] = volNarracion
+            narracion = True
 
-        if indicesMenu['pausa'] == 2 : #Volumen de efectos
+        elif indicesMenu['pausa'] == 2 : #Volumen de efectos
             if volEfectos < 10 :
                 volEfectos += 1
                 datosPausa[2]['dato'] = volEfectos
+            efectos = True
 
+        elif indicesMenu['pausa'] == 3 : #Musica
+            if indiceMusicaFondo < len(carpetasMusicaFondo) - 1 :
+                indiceMusicaFondo += 1
+            else:
+                indiceMusicaFondo = 0
+            datosPausa[3]['dato'] = nombreCarpetas[indiceMusicaFondo]
+            tocarMusica()
+            pausarMusica()
 
+        elif indicesMenu['pausa'] == 4 : # Nuevo juego
+            if datosPausa[4]['dato'] == 'No':
+                datosPausa[4]['dato'] = 'Si'
+            else:
+                datosPausa[4]['dato'] = 'No'
 
 def procesarIzquierda():
-    global sets, puntosPorSet, volMusica
+    global sets, puntosPorSet, volMusica, volNarracion, volEfectos, musica, narracion, efectos, indiceMusicaFondo
 
     if estado == estados[0]: # Inicio
 
@@ -567,6 +613,38 @@ def procesarIzquierda():
 
             setearVolumen()
 
+        elif indicesMenu['pausa'] == 1 : #Volumen de narracion
+
+            if volNarracion > 0 :
+                volNarracion -= 1
+                datosPausa[1]['dato'] = volNarracion
+                if volNarracion == 0 :
+                    narracion == False
+
+        elif indicesMenu['pausa'] == 2 : #Volumen de efectos
+
+            if volEfectos > 0 :
+                volEfectos -= 1
+                datosPausa[2]['dato'] = volEfectos
+                if volEfectos == 0 :
+                    efectos == False
+
+        elif indicesMenu['pausa'] == 3 : #Musica
+            if indiceMusicaFondo > 0 :
+                indiceMusicaFondo -= 1
+            else:
+                indiceMusicaFondo = len(carpetasMusicaFondo) - 1
+            datosPausa[3]['dato'] = nombreCarpetas[indiceMusicaFondo]
+            tocarMusica()
+            pausarMusica()
+
+        elif indicesMenu['pausa'] == 4 : # Nuevo juego
+            if datosPausa[4]['dato'] == 'No':
+                datosPausa[4]['dato'] = 'Si'
+            else:
+                datosPausa[4]['dato'] = 'No'
+
+
 def procesarAbajo():
 
     if estado == estados[0]: # Inicio
@@ -624,7 +702,7 @@ def procesarContinuar():
 # estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , "pausa" , "post fin" , "fin" )
 
     if estado == estados[0]:    # Inicio
-        estado = estados[1]     # Post juego
+        estado = estados[2]     # Post juego
 
     elif estado == estados[1]:  # Post juego
         estado = estados[2]     # cuenta
@@ -632,6 +710,11 @@ def procesarContinuar():
     elif estado == estados[3]:  # jugando
         estado = estados[5]     # pausa
         pausarMusica()
+
+    elif estado == estados[5] and datosPausa[4]['dato'] == 'Si': # Nuevo Juego
+        iniciarMarcadores()
+        estado = estados[0]
+        datosPausa[4]['dato'] = 'No'
 
     elif estado == estados[5]:  # pausa
         estado = estados[3]     # jugando
