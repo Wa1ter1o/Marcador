@@ -10,6 +10,7 @@ import clases
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
+pygame.mixer.set_reserved(0)
 
 pygame.mouse.set_visible(False)
 
@@ -58,6 +59,68 @@ audiofx = {
     'set' : mixer.Sound('assets/sonidos/fx/set.wav') 
     }
 
+rutas = list(Path('assets/sonidos/frases/Mariano/un punto').iterdir())
+unPunto = []
+for ruta in rutas:
+    unPunto.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
+dosPuntos = []
+for ruta in rutas:
+    dosPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/cuatro puntos').iterdir())
+cuatroPuntos = []
+for ruta in rutas:
+    cuatroPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/cinco puntos').iterdir())
+cincoPuntos = []
+for ruta in rutas:
+    cincoPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/seis puntos').iterdir())
+seisPuntos = []
+for ruta in rutas:
+    seisPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/siete puntos').iterdir())
+sietePuntos = []
+for ruta in rutas:
+    sietePuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
+DosPuntos = []
+for ruta in rutas:
+    DosPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
+DosPuntos = []
+for ruta in rutas:
+    DosPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
+DosPuntos = []
+for ruta in rutas:
+    DosPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/ocho puntos').iterdir())
+ochoPuntos = []
+for ruta in rutas:
+    ochoPuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/nueve puntos').iterdir())
+nuevePuntos = []
+for ruta in rutas:
+    nuevePuntos.append(mixer.Sound(ruta))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/diez puntos').iterdir())
+diezPuntos = []
+for ruta in rutas:
+    diezPuntos.append(mixer.Sound(ruta))
+
+
+
 carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
 rutasMusica = []
 nombreCarpetas = []
@@ -79,8 +142,9 @@ for carpeta in carpetasMusicaFondo:
 
     nombreCarpetas.append(nombre)
 
-print (nombreCarpetas)
-
+canalComentario = mixer.Channel(0)
+reproducirComentario = []
+reproducirEfecto = []
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& JUGADORES $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 jugadores = [
@@ -131,7 +195,6 @@ arbitro = False
 segInicioCuentaRegresiva = None
 contandoSegudos = False
 
-reproducir = []
 beeps = [ 0, 0, 0, 0 ]
 
 #////////////////////////////// LISTAS DE MENÚ //////////////////////////////////////////////////////////////////////////////
@@ -231,13 +294,18 @@ def setearVolumen():
 
 
 def reproducirCola():
-    global reproducir
+    global reproducirComentario, reproducirEfecto
 
-
-
-    if len(reproducir) > 0 and not mixer.get_busy() :
-        audio = reproducir.pop(0)
+    if len(reproducirComentario) > 0 and not canalComentario.get_busy():
+        audio = reproducirComentario.pop(0)
         audio.set_volume( volNarracion / 10 )
+        audio.play(0)
+    else:
+        print(mixer.get_busy())
+
+    if len(reproducirEfecto) > 0 :
+        audio = reproducirEfecto.pop(0)
+        audio.set_volume( volEfectos / 10 )
         audio.play()
 
 
@@ -316,19 +384,31 @@ def comprobarReglas():
         anotarSet()
         cambiarLado()
 
+def agregarComentario(clave, puntos):
+
+    if clave == 'punto':
+        if puntos == 1:
+            reproducirComentario.append(unPunto[random.randint(0, len(unPunto)-1)])
+
 
 def anotarPunto(jugador):
     global puntosTotalesSet
 
     if jugador == 1:
         jugadorUno.anotarPunto()
+        jugadorUno.puntosSeguidos += 1
+        jugadorDos.puntosSeguidos = 0
         if narracion :
-            reproducir.append(jugadorUno.tts)
+            reproducirComentario.append(jugadorUno.tts)
+            agregarComentario('punto', jugadorUno.puntosSeguidos)
 
     if jugador == 2:
         jugadorDos.anotarPunto()
+        jugadorDos.puntosSeguidos += 1
+        jugadorUno.puntosSeguidos = 0
         if narracion :
-            reproducir.append(jugadorDos.tts)
+            reproducirComentario.append(jugadorDos.tts)
+            agregarComentario('punto', jugadorDos.puntosSeguidos)
 
     puntosTotalesSet += 1
 
@@ -347,8 +427,8 @@ def anotarSet():
 
     iniciarPuntos()
 
-    audiofx['set'].set_volume(volEfectos / 10)
-    audiofx['set'].play()
+    reproducirEfecto.append(audiofx['set'])
+    
 
 def iniciarMarcadores():
     global puntosTotalesSet

@@ -108,6 +108,8 @@ class Jugador:
         self.fondo = fondo
         self.lado = lado
 
+        self.puntosSeguidos = 0
+
         self.posFinal = [ 0, 0 ]
         self.pos = [ 510, 50 ]
 
