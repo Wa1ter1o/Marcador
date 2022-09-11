@@ -176,7 +176,7 @@ class menu:
             "fuente": "OCR A Extended",
             "tFNombre": 100, "tFDato": 70, 'tFInstruccion' : 50,
             "cFNombre": (250, 250, 250), "cFDato": (200, 200, 200), 'cFInstruccion' : (250, 250, 250),
-            "yNombre": 70, "yDatos": 220, "yEntreDatos": 125, 'yInstruccion' : 900, 
+            "yNombre": 50, "yDatos": 200, "yEntreDatos": 120, 'yInstruccion' : 900, 
             "xMargen" : 20
         }
 
