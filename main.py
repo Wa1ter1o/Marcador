@@ -41,6 +41,8 @@ pygame.display.set_caption( 'Marcador para tenis de mesa' )
 fondoOriginal = pygame.image.load( "assets/img/fondo.jpg" )
 fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
 
+ganador = pygame.image.load( 'assets/img/ganador.jpg' )
+
 azul = pygame.image.load( "assets/img/azul.png" )
 rojo = pygame.image.load( "assets/img/rojo.png" )
 color = True
@@ -161,15 +163,25 @@ reproducirEfecto = []
 
 jugadores = [
      { "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } ,
+     { "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } ,
+     { "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } ,
+     { "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } ,
      { "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } ,
      { "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } ,
+     { "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } ,
+     { "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } ,
      { "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } ,
      { "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } ,
      { "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } ,
+     { "nombre" : "Luis" , "tts" : mixer.Sound('assets/sonidos/nombres/Luis.wav') } ,
      { "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } ,
+     { "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } ,
+     { "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } ,
+     { "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } ,
+     { "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } ,
      { "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') } ,
-     { "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } ,
-     { "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') } 
+     { "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') }, 
+     { "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } 
      ]
 
 nombres = []
@@ -335,12 +347,18 @@ def dibujarMenu() :
     elif estado == estados[7]: # Fin del juego
         canvas.blit( menuFin.generarImagen(), menuFin.pos)
 
-        fuente = pygame.font.SysFont( iu["fuente"], 350 ) 
+        if jugadorUno.sets >= jugadorDos.sets :
+            canvas.blit(ganador, ( ( ancho / 4 - ( ganador.get_rect()[2] ) / 2), alto / 2 - 50 - ( ganador.get_rect()[3] ) / 2 ) )
+        if jugadorDos.sets >= jugadorUno.sets :
+            canvas.blit(ganador, ( ( ancho / 4 * 3 - ( ganador.get_rect()[2] ) / 2), alto / 2 - 50 - ( ganador.get_rect()[3] ) / 2 ) )
+
+        fuente = pygame.font.SysFont( iu["fuente"], 300 ) 
         imgTexto = fuente.render(str( jugadorUno.sets ), True, ( 255, 145, 53 ) )
-        canvas.blit(imgTexto, ( ( ancho / 4 - ( imgTexto.get_rect()[2] ) / 2), alto / 5 * 3 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
+        canvas.blit(imgTexto, ( ( ancho / 4 - ( imgTexto.get_rect()[2] ) / 2), alto / 3 * 2 + 25 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
 
         imgTexto = fuente.render(str( jugadorDos.sets ), True, ( 255, 145, 53 ) )
-        canvas.blit(imgTexto, ( ( ancho / 4 * 3 - ( imgTexto.get_rect()[2] ) / 2), alto / 5 * 3 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
+        canvas.blit(imgTexto, ( ( ancho / 4 * 3 - ( imgTexto.get_rect()[2] ) / 2), alto / 3 * 2 + 25 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
+
 
 
 
