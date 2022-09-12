@@ -187,17 +187,19 @@ pelota = clases.pelota( "izquierda" )
 
 
 sets = 1    
-nSet = 0                    #sets a jugar
+nSet = 0                        #sets a jugar
 puntosPorSet = 11               #puntos a jugar por set
 cambioSaque = 2                 #número de saques para hacer cambio de saque
 lado = True                     #define de que lado se encuentra cada jugador
 saque = True                    #si es True el saque le corresponde al jugador uno
+primerSaque = 1
 
 
 puntosTotalesSet = 0
 anotaciones = []
 datosSets = [ [" " , " "] , [" " , " "] , [" ", " "] , [" " , " "] , [" " , " "] ]
 
+#              0             1            2          3               4             5          6          7
 estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , "pausa" , "post fin" , "fin" )
 
 estado = estados[ 0 ]
@@ -214,7 +216,7 @@ beeps = [ 0, 0, 0, 0 ]
 
 #////////////////////////////// LISTAS DE MENÚ //////////////////////////////////////////////////////////////////////////////
 
-indicesMenu = { 'inicio' : 0 , 'pausa' : 0, 'fin' : 0 }
+indicesMenu = { 'inicio' : 0 , 'pausa' : 0, 'fin' : 0, 'post nuevo set' : 0 }
 
 datosInicio = [
     {
@@ -284,6 +286,20 @@ datosFin = [
 
 menuFin = clases.menu(pygame, 'FIN DEL JUEGO', 'Espacio Para Comenzar de Nuevo', datosFin, indicesMenu['fin'] )
 
+datosPostNuevoSet = [
+    {
+        'titulo' : jugadorUno.nombre , 'dato' : jugadorDos.nombre
+    },
+    {
+        'titulo' : ' ' , 'dato' : ' '
+    },
+    {
+        'titulo' : jugadorUno.puntos, 'dato' : jugadorDos.puntos
+    }
+]
+
+menuPostNuevoSet = clases.menu(pygame, 'FIN DEL SET', 'ESPACIO: continuar, BACKSPACE: cancelar', datosPostNuevoSet, indicesMenu['post nuevo set'])
+
 #-----------------------------FUNCIONES--------------------------------------------------------------------------------------
 
 def mover():
@@ -307,14 +323,26 @@ def dibujarMenu() :
     if estado == estados[ 0 ] :
         canvas.blit( menuInicio.generarImagen(), menuInicio.pos )
 
-    if estado == estados[ 2 ] :
+    elif estado == estados[ 2 ] :
         cuentaRegresiva()
 
-    if estado == estados[5] :
+    elif estado == estados[5] :
         canvas.blit( menuPausa.generarImagen(), menuPausa.pos)
 
-    elif estado == estados[7]:
+    elif estado == estados[4] :
+        canvas.blit( menuPostNuevoSet.generarImagen(), menuPostNuevoSet.pos)
+
+    elif estado == estados[7]: # Fin del juego
         canvas.blit( menuFin.generarImagen(), menuFin.pos)
+
+        fuente = pygame.font.SysFont( iu["fuente"], 350 ) 
+        imgTexto = fuente.render(str( jugadorUno.sets ), True, ( 255, 145, 53 ) )
+        canvas.blit(imgTexto, ( ( ancho / 4 - ( imgTexto.get_rect()[2] ) / 2), alto / 5 * 3 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
+
+        imgTexto = fuente.render(str( jugadorDos.sets ), True, ( 255, 145, 53 ) )
+        canvas.blit(imgTexto, ( ( ancho / 4 * 3 - ( imgTexto.get_rect()[2] ) / 2), alto / 5 * 3 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
+
+
 
 def tocarMusica() :
 
@@ -355,7 +383,7 @@ def reproducirCola():
 
 
 def cuentaRegresiva():
-    global segInicioCuentaRegresiva, contandoSegudos, estado, beeps, nSet
+    global segInicioCuentaRegresiva, contandoSegudos, estado, beeps, nSet, primerSaque
 
     if not contandoSegudos :
         segInicioCuentaRegresiva = milisegundos / 1000
@@ -371,7 +399,7 @@ def cuentaRegresiva():
     if segFaltantes < 4 and beeps[0] == 0 :
         audiofx['bep'].set_volume(volEfectos)
         audiofx['bep'].play()
-        if datosInicio[4]['indice'] == 2:
+        if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
                 cambiarSaque()
         beeps[0] = 1
@@ -379,7 +407,7 @@ def cuentaRegresiva():
     if segFaltantes < 3 and beeps[1] == 0 :
         audiofx['bep'].set_volume(volEfectos)
         audiofx['bep'].play()
-        if datosInicio[4]['indice'] == 2:
+        if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
                 cambiarSaque()
         beeps[1] = 1
@@ -387,7 +415,7 @@ def cuentaRegresiva():
     if segFaltantes < 2 and beeps[2] == 0 :
         audiofx['bep'].set_volume(volEfectos)
         audiofx['bep'].play()
-        if datosInicio[4]['indice'] == 2:
+        if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
                 cambiarSaque()
         beeps[2] = 1
@@ -395,7 +423,7 @@ def cuentaRegresiva():
     if segFaltantes < 1 and beeps[3] == 0 :
         audiofx['bep2'].set_volume(volEfectos)
         audiofx['bep2'].play()
-        if datosInicio[4]['indice'] == 2:
+        if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
                 cambiarSaque()
         beeps[3] = 1
@@ -406,30 +434,49 @@ def cuentaRegresiva():
         beeps = [ 0, 0, 0, 0]
 
         setearVolumen(volMusica)
-        tocarMusica()
+        if nSet == 0:
+            tocarMusica()
+        else:
+            seguirMusica()
 
         nSet += 1
+
+        if nSet == 1:
+            if jugadorUno.saque :
+                primerSaque = 1
+            elif jugadorDos.saque:
+                primerSaque = 2
 
 
 
 def comprobarReglas():
-
+    global estado, reproducirComentario
 
     if ( puntosPorSet - jugadorUno.puntos <= 1 ) and ( puntosPorSet - jugadorDos.puntos <= 1 ) :
         cambiarSaque()
     elif puntosTotalesSet % cambioSaque == 0:
         cambiarSaque()
 
-    pInvParaGanar = ( puntosPorSet + 1 ) / 2 + 1
+    pInvParaGanar = ( puntosPorSet + 3 ) / 2 
     if ( jugadorUno.puntos == pInvParaGanar or jugadorDos.puntos == pInvParaGanar) and \
         ( jugadorUno.puntos == 0 or jugadorDos.puntos == 0 ) :
-        anotarSet()
-        cambiarLado()
+        audiofx['set'].set_volume( volEfectos / 10 )
+        reproducirEfecto.append(audiofx['set'])
+        pasarDatosSet()
+        estado = estados[4] # Pre Nuevo Set
+        pausarMusica()
+        reproducirComentario = []
 
     if ( (jugadorUno.puntos >= puntosPorSet ) or ( jugadorDos.puntos >= puntosPorSet ) ) \
         and abs( jugadorUno.puntos - jugadorDos.puntos ) >= 2 :
-        anotarSet()
-        cambiarLado()
+        audiofx['set'].set_volume( volEfectos / 10 )
+        reproducirEfecto.append(audiofx['set'])
+        pasarDatosSet()
+        estado = estados[4] # Pre Nuevo Set
+        pausarMusica()
+        reproducirComentario = []
+
+    print(estado)
 
 def agregarComentario(clave, puntos):
     global reproducirComentario
@@ -485,12 +532,14 @@ def anotarPunto(jugador):
     audiofx['punto'].set_volume( volEfectos / 10 )
     audiofx['punto'].play()
 
-    datosSets[nSet - 1][0] = jugadorUno.puntos
-    datosSets[nSet - 1][1] = jugadorDos.puntos
+    if nSet <= 5 :
+        datosSets[nSet - 1][0] = jugadorUno.puntos
+        datosSets[nSet - 1][1] = jugadorDos.puntos
+
     comprobarReglas()
 
 def retrocederPunto():
-    global anotaciones, puntosTotalesSet
+    global anotaciones, puntosTotalesSet, estado
 
     if len(anotaciones) > 0 :
 
@@ -508,6 +557,10 @@ def retrocederPunto():
         if puntosTotalesSet % 2:
             cambiarSaque()
 
+        if estado == estados[4] :
+            estado = estados[3]
+            seguirMusica()
+
         audiofx['puntoMenos'].play()
 
 
@@ -522,8 +575,7 @@ def anotarSet():
         jugadorDos.anotarSet()
 
     iniciarPuntos()
-
-    reproducirEfecto.append(audiofx['set'])
+    
     
 
 def iniciarMarcadores():
@@ -543,6 +595,16 @@ def iniciarMarcadores():
 
     datosSets = [ [" " , " "] , [" " , " "] , [" ", " "] , [" " , " "] , [" " , " "] ]
 
+    if datosInicio[4]['dato'] == jugadorUno.nombre :
+        if jugadorDos.saque :
+            cambiarSaque()
+    elif datosInicio[4]['dato'] == jugadorDos.nombre:
+        if jugadorUno.saque : 
+            cambiarSaque()
+
+    if jugadorUno.lado == 'derecha' :
+        cambiarLado()
+
 def pasarDatosSets(): #Le transfiere los datos de datosSets a datosFin 
     global datosFin
 
@@ -551,19 +613,32 @@ def pasarDatosSets(): #Le transfiere los datos de datosSets a datosFin
 
     for i, dato in enumerate(datosSets) :
         print ( i , " ",  dato )
+        if i > 5 :
+            break
         datosFin[i+1]['titulo'] = dato[0]
         datosFin[i+1]['dato'] = dato[1]
 
+def pasarDatosSet() : # Transfiere datos del set acutal a datosPostNuevoSet
+    global datosPostNuevoSet
+
+    datosPostNuevoSet[0]['titulo'] = jugadorUno.nombre
+    datosPostNuevoSet[0]['dato'] = jugadorDos.nombre
+
+    datosPostNuevoSet[2]['titulo'] = jugadorUno.puntos
+    datosPostNuevoSet[2]['dato'] = jugadorDos.puntos
+
 def iniciarPuntos():
-    global puntosTotalesSet
+    global puntosTotalesSet, anotaciones
 
     jugadorUno.puntos = 0
     jugadorUno.puntosSeguidos = 0
 
     jugadorDos.puntos = 0
-    jugadorUno.puntosSeguidos = 0
+    jugadorDos.puntosSeguidos = 0
 
     puntosTotalesSet = 0
+
+    anotaciones = [] 
 
 
 def cambiarLado():
@@ -911,20 +986,28 @@ def procesarContinuar():
         pausarMusica()
 
     elif estado == estados[5] and datosPausa[4]['dato'] == 'Si': # Nuevo Juego
-        iniciarMarcadores()
-        estado = estados[7]
         pasarDatosSets()
+        estado = estados[7]
         datosPausa[4]['dato'] = 'No'
+        reproducirComentario = []
 
     elif estado == estados[5]:  # pausa
         estado = estados[3]     # jugando
         seguirMusica()
     
     elif estado == estados[4]:  # post nuevo set
-        estado = estados[2]     # cuenta
-
-    elif estado == estados[6]:  # post fin
-        estado = estados[7]     # fin
+        anotarSet()
+        if jugadorUno.sets > sets / 2 or jugadorDos.sets > sets / 2 : # si alguno ganó más de la mitad de sets
+            pasarDatosSets()
+            estado = estados[7]
+            reproducirComentario = []
+        else:
+            cambiarLado()
+            if primerSaque == 1:
+                if jugadorUno.saque and jugadorUno.lado == 'derecha' :
+                    cambiarSaque()
+                
+            estado = estados[2]     # cuenta
 
     elif estado == estados[7]:  # fin
         estado = estados[0]     # inicio

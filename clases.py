@@ -201,7 +201,7 @@ class menu:
 
         for i, dato in enumerate(self.datos) : 
 
-            imgTexto = fuente.render( dato['titulo'] + " :", True, iu['cFDato'] )
+            imgTexto = fuente.render( str(dato['titulo']) + " :", True, iu['cFDato'] )
             imagen.blit( imgTexto, ( self.tamaño[0] / 2 - imgTexto.get_rect()[2] , iu['yDatos'] + iu['yEntreDatos'] * i ) )
 
             imgTexto = fuente.render( str( dato['dato'] ), True, iu['cFDato'] )
