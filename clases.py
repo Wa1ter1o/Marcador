@@ -223,7 +223,7 @@ class menu:
 
         self.pos = ( ( 960 - self.tamaño[0] / 2 ) , ( 540 - self.tamaño[1] / 2 ) )
 
-        self.fondo = self.pygame.image.load( "assets/img/menu.png" )
+        self.fondo = self.pygame.image.load( "assets/img/menu.jpg" )
 
 
         

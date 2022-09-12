@@ -28,7 +28,7 @@ infoPantalla = pygame.display.Info()
 #print(infoPantalla)
 #escala de pantalla
 escala = infoPantalla.current_w / ancho
-print("escala: " + str(escala))
+#print("escala: " + str(escala))
 escala = 0.7
 
 ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ) )
@@ -43,8 +43,8 @@ fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
 
 ganador = pygame.image.load( 'assets/img/ganador.jpg' )
 
-azul = pygame.image.load( "assets/img/azul.png" )
-rojo = pygame.image.load( "assets/img/rojo.png" )
+azul = pygame.image.load( "assets/img/azul.jpg" )
+rojo = pygame.image.load( "assets/img/rojo.jpg" )
 color = True
 
 volMusica = 10
@@ -347,9 +347,9 @@ def dibujarMenu() :
     elif estado == estados[7]: # Fin del juego
         canvas.blit( menuFin.generarImagen(), menuFin.pos)
 
-        if jugadorUno.sets >= jugadorDos.sets :
+        if jugadorUno.sets >= jugadorDos.sets and jugadorUno.sets > 0:
             canvas.blit(ganador, ( ( ancho / 4 - ( ganador.get_rect()[2] ) / 2), alto / 2 - 50 - ( ganador.get_rect()[3] ) / 2 ) )
-        if jugadorDos.sets >= jugadorUno.sets :
+        if jugadorDos.sets >= jugadorUno.sets and jugadorDos.sets > 0:
             canvas.blit(ganador, ( ( ancho / 4 * 3 - ( ganador.get_rect()[2] ) / 2), alto / 2 - 50 - ( ganador.get_rect()[3] ) / 2 ) )
 
         fuente = pygame.font.SysFont( iu["fuente"], 300 ) 
@@ -494,7 +494,7 @@ def comprobarReglas():
         pausarMusica()
         reproducirComentario = []
 
-    print(estado)
+    #print(estado)
 
 def agregarComentario(clave, puntos):
     global reproducirComentario
@@ -630,7 +630,7 @@ def pasarDatosSets(): #Le transfiere los datos de datosSets a datosFin
     datosFin[0]['dato'] = jugadorDos.nombre
 
     for i, dato in enumerate(datosSets) :
-        print ( i , " ",  dato )
+        #print ( i , " ",  dato )
         if i > 5 :
             break
         datosFin[i+1]['titulo'] = dato[0]
@@ -988,7 +988,7 @@ def procesarArriba():
 
 
 def procesarContinuar():
-    global estado
+    global estado, reproducirComentario
 
 #                0             1            2          3              4              5           6         7
 # estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , "pausa" , "post fin" , "fin" )
@@ -1031,7 +1031,7 @@ def procesarContinuar():
         estado = estados[0]     # inicio
         iniciarMarcadores()
 
-    print ( estado )
+    #print ( estado )
 
 def procesarPuntoIzquierda():
 
