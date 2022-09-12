@@ -1067,8 +1067,12 @@ while True:
 
     milisegundos = tiempo.get_ticks()
     mover()
-    dibujarFondo()
-    dibujarJugadores()
+
+    if estado == estados[2] or estado == estados[3] :
+
+        dibujarFondo()
+        dibujarJugadores()
+
     dibujarMenu()
 
     for evento in eventos.get():
