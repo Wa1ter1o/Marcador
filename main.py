@@ -230,6 +230,9 @@ lado = True                     #define de que lado se encuentra cada jugador
 saque = True                    #si es True el saque le corresponde al jugador uno
 primerSaque = 1
 
+milisUltimoPunto = 0
+milisProteccionPunto = 500
+
 
 puntosTotalesSet = 0
 anotaciones = []
@@ -561,36 +564,40 @@ def agregarComentario(clave, puntos):
 
 
 def anotarPunto(jugador):
-    global puntosTotalesSet
+    global puntosTotalesSet, milisUltimoPunto
 
-    if jugador == 1:
-        jugadorUno.anotarPunto()
-        anotaciones.append(1)
-        jugadorUno.puntosSeguidos += 1
-        jugadorDos.puntosSeguidos = 0
-        if narracion :
-            reproducirComentario.append(jugadorUno.tts)
-            agregarComentario('punto', jugadorUno.puntosSeguidos)
+    if milisProteccionPunto < milisegundos - milisUltimoPunto :
 
-    if jugador == 2:
-        jugadorDos.anotarPunto()
-        anotaciones.append(2)
-        jugadorDos.puntosSeguidos += 1
-        jugadorUno.puntosSeguidos = 0
-        if narracion :
-            reproducirComentario.append(jugadorDos.tts)
-            agregarComentario('punto', jugadorDos.puntosSeguidos)
+        milisUltimoPunto = milisegundos
 
-    puntosTotalesSet += 1
+        if jugador == 1:
+            jugadorUno.anotarPunto()
+            anotaciones.append(1)
+            jugadorUno.puntosSeguidos += 1
+            jugadorDos.puntosSeguidos = 0
+            if narracion :
+                reproducirComentario.append(jugadorUno.tts)
+                agregarComentario('punto', jugadorUno.puntosSeguidos)
 
-    audiofx['punto'].set_volume( volEfectos / 10 )
-    audiofx['punto'].play()
+        if jugador == 2:
+            jugadorDos.anotarPunto()
+            anotaciones.append(2)
+            jugadorDos.puntosSeguidos += 1
+            jugadorUno.puntosSeguidos = 0
+            if narracion :
+                reproducirComentario.append(jugadorDos.tts)
+                agregarComentario('punto', jugadorDos.puntosSeguidos)
 
-    if nSet <= 5 :
-        datosSets[nSet - 1][0] = jugadorUno.puntos
-        datosSets[nSet - 1][1] = jugadorDos.puntos
+        puntosTotalesSet += 1
 
-    comprobarReglas()
+        audiofx['punto'].set_volume( volEfectos / 10 )
+        audiofx['punto'].play()
+
+        if nSet <= 5 :
+            datosSets[nSet - 1][0] = jugadorUno.puntos
+            datosSets[nSet - 1][1] = jugadorDos.puntos
+
+        comprobarReglas()
 
 def retrocederPunto():
     global anotaciones, puntosTotalesSet, estado
@@ -1055,12 +1062,14 @@ def procesarContinuar():
         datosPausa[4]['dato'] = 'No'
         reproducirComentario = []
 
-        reproducirComentario.append( felicidades[random.randint(0, len(felicidades) - 1)] )
         if jugadorUno.sets > jugadorDos.sets:
+            reproducirComentario.append( felicidades[random.randint(0, len(felicidades) - 1)] )
             reproducirComentario.append(jugadorUno.tts)
+            reproducirComentario.append( ganaJuego[random.randint(0, len(ganaJuego) - 1)] )
         if jugadorDos.sets > jugadorUno.sets:
+            reproducirComentario.append( felicidades[random.randint(0, len(felicidades) - 1)] )
             reproducirComentario.append(jugadorDos.tts)
-        reproducirComentario.append( ganaJuego[random.randint(0, len(ganaJuego) - 1)] )
+            reproducirComentario.append( ganaJuego[random.randint(0, len(ganaJuego) - 1)] )
 
     elif estado == estados[5]:  # pausa
         estado = estados[3]     # jugando
