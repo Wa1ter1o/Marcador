@@ -228,7 +228,7 @@ puntosPorSet = 11               #puntos a jugar por set
 cambioSaque = 2                 #número de saques para hacer cambio de saque
 lado = True                     #define de que lado se encuentra cada jugador
 saque = True                    #si es True el saque le corresponde al jugador uno
-primerSaque = 1
+primerSaque = 'izquierda'
 
 milisUltimoPunto = 0
 milisProteccionPunto = 500
@@ -490,10 +490,16 @@ def cuentaRegresiva():
 
         if nSet == 1:
             if jugadorUno.saque :
-                primerSaque = 1
-            elif jugadorDos.saque:
-                primerSaque = 2
+                if jugadorUno.lado == 'izquieda':
+                    primerSaque = 'izquierda'
+                else:
+                    primerSaque = 'derecha'
 
+            elif jugadorDos.saque:
+                if jugadorDos.lado == 'derecha' :
+                    primerSaque == 'derecha'
+                else:
+                    primerSaque == 'izquierda'
 
 
 def comprobarReglas():
@@ -1090,11 +1096,18 @@ def procesarContinuar():
             reproducirComentario.append( ganaJuego[random.randint(0, len(ganaJuego) - 1)] )
 
         else:
+            
             cambiarLado()
-            if primerSaque == 1:
-                if jugadorUno.saque and jugadorUno.lado == 'derecha' :
+
+            if jugadorUno.saque: 
+                if jugadorUno.lado == primerSaque :
+                    cambiarSaque() 
+            elif jugadorDos.saque:
+                if jugadorDos.lado == primerSaque :
                     cambiarSaque()
-                
+
+
+            
             estado = estados[2]     # cuenta
 
     elif estado == estados[7]:  # fin
