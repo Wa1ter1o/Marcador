@@ -58,6 +58,9 @@ efectos = True
 audiofx = {
     'bep' : mixer.Sound('assets/sonidos/fx/bep.wav') , 
     'bep2' : mixer.Sound('assets/sonidos/fx/bep2.wav'),
+    'bep3' : mixer.Sound('assets/sonidos/fx/bep3.wav'),
+    'bep4' : mixer.Sound('assets/sonidos/fx/bep4.wav'),
+    'bep5' : mixer.Sound('assets/sonidos/fx/bep5.wav'),
     'punto' : mixer.Sound('assets/sonidos/fx/punto.wav'),
     'puntoMenos' : mixer.Sound('assets/sonidos/fx/puntoMenos.wav'),
     'set' : mixer.Sound('assets/sonidos/fx/set.wav') 
@@ -66,73 +69,94 @@ audiofx = {
 rutas = list(Path('assets/sonidos/frases/Mariano/un punto').iterdir())
 unPunto = []
 for ruta in rutas:
-    unPunto.append(mixer.Sound(ruta))
+    unPunto.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
 dosPuntos = []
 for ruta in rutas:
-    dosPuntos.append(mixer.Sound(ruta))
+    dosPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/tres puntos').iterdir())
 tresPuntos = []
 for ruta in rutas:
-    tresPuntos.append(mixer.Sound(ruta))
+    tresPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/cuatro puntos').iterdir())
 cuatroPuntos = []
 for ruta in rutas:
-    cuatroPuntos.append(mixer.Sound(ruta))
+    cuatroPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/cinco puntos').iterdir())
 cincoPuntos = []
 for ruta in rutas:
-    cincoPuntos.append(mixer.Sound(ruta))
+    cincoPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/seis puntos').iterdir())
 seisPuntos = []
 for ruta in rutas:
-    seisPuntos.append(mixer.Sound(ruta))
+    seisPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/siete puntos').iterdir())
 sietePuntos = []
 for ruta in rutas:
-    sietePuntos.append(mixer.Sound(ruta))
+    sietePuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
 DosPuntos = []
 for ruta in rutas:
-    DosPuntos.append(mixer.Sound(ruta))
+    DosPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
 DosPuntos = []
 for ruta in rutas:
-    DosPuntos.append(mixer.Sound(ruta))
+    DosPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/dos puntos').iterdir())
 DosPuntos = []
 for ruta in rutas:
-    DosPuntos.append(mixer.Sound(ruta))
+    DosPuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/ocho puntos').iterdir())
 ochoPuntos = []
 for ruta in rutas:
-    ochoPuntos.append(mixer.Sound(ruta))
-
+    ochoPuntos.append(mixer.Sound(str(ruta)))
 rutas = list(Path('assets/sonidos/frases/Mariano/nueve puntos').iterdir())
 nuevePuntos = []
 for ruta in rutas:
-    nuevePuntos.append(mixer.Sound(ruta))
+    nuevePuntos.append(mixer.Sound(str(ruta)))
 
 rutas = list(Path('assets/sonidos/frases/Mariano/diez puntos').iterdir())
 diezPuntos = []
 for ruta in rutas:
-    diezPuntos.append(mixer.Sound(ruta))
-
+    diezPuntos.append(mixer.Sound(str(ruta)))
 rutas = list(Path('assets/sonidos/frases/Mariano/mas diez puntos').iterdir())
 masDiezPuntos = []
 for ruta in rutas:
-    masDiezPuntos.append(mixer.Sound(ruta))
+    masDiezPuntos.append(mixer.Sound(str(ruta)))
 
+
+rutas = list(Path('assets/sonidos/frases/Mariano/felicidades').iterdir())
+felicidades = []
+for ruta in rutas:
+    felicidades.append(mixer.Sound(str(ruta)))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/inicio de set').iterdir())
+inicioSet = []
+for ruta in rutas:
+    inicioSet.append(mixer.Sound(str(ruta)))
+rutas = list(Path('assets/sonidos/frases/Mariano/inicio de juego').iterdir())
+inicioJuego = []
+for ruta in rutas:
+    inicioJuego.append(mixer.Sound(str(ruta)))
+rutas = list(Path('assets/sonidos/frases/Mariano/gana set').iterdir())
+ganaSet = []
+for ruta in rutas:
+    ganaSet.append(mixer.Sound(str(ruta)))
+
+rutas = list(Path('assets/sonidos/frases/Mariano/gana juego').iterdir())
+ganaJuego = []
+for ruta in rutas:
+    ganaJuego.append(mixer.Sound(str(ruta)))
 
 
 carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
@@ -365,7 +389,7 @@ def dibujarMenu() :
 def tocarMusica() :
 
     if musica :
-        mixer.music.load(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)])
+        mixer.music.load(str(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)]))
         mixer.music.play(-1)
 
 def pausarMusica() :
@@ -389,7 +413,7 @@ def reproducirCola():
         audio = reproducirComentario.pop(0)
         audio.set_volume( volNarracion / 10 )
         audio.play(0)
-        setearVolumen(1)
+        setearVolumen(volMusica / 4)
     
     if len(reproducirComentario) == 0 and not canalComentario.get_busy():
         setearVolumen(volMusica)
@@ -454,10 +478,12 @@ def cuentaRegresiva():
         setearVolumen(volMusica)
         if nSet == 0:
             tocarMusica()
+            reproducirComentario.append( inicioJuego[ random.randint( 0, len(inicioJuego) - 1 ) ] )
         else:
             seguirMusica()
 
         nSet += 1
+        reproducirComentario.append( inicioSet[ random.randint( 0, len(inicioSet) - 1 ) ] )
 
         if nSet == 1:
             if jugadorUno.saque :
@@ -484,6 +510,11 @@ def comprobarReglas():
         estado = estados[4] # Pre Nuevo Set
         pausarMusica()
         reproducirComentario = []
+        if jugadorUno.puntos > jugadorDos.puntos:
+            reproducirComentario.append(jugadorUno.tts)
+        else:
+            reproducirComentario.append(jugadorDos.tts)
+        reproducirComentario.append( ganaSet[random.randint(0, len(ganaSet) - 1)] )
 
     if ( (jugadorUno.puntos >= puntosPorSet ) or ( jugadorDos.puntos >= puntosPorSet ) ) \
         and abs( jugadorUno.puntos - jugadorDos.puntos ) >= 2 :
@@ -493,6 +524,11 @@ def comprobarReglas():
         estado = estados[4] # Pre Nuevo Set
         pausarMusica()
         reproducirComentario = []
+        if jugadorUno.puntos > jugadorDos.puntos:
+            reproducirComentario.append(jugadorUno.tts)
+        else:
+            reproducirComentario.append(jugadorDos.tts)
+        reproducirComentario.append( ganaSet[random.randint(0, len(ganaSet) - 1)] )
 
     #print(estado)
 
@@ -810,6 +846,9 @@ def procesarDerecha():
             else:
                 datosPausa[4]['dato'] = 'No'
 
+    audiofx['bep3'].set_volume(volEfectos)
+    audiofx['bep3'].play()
+
 def procesarIzquierda():
     global sets, puntosPorSet, volMusica, volNarracion, volEfectos, musica, narracion, efectos, indiceMusicaFondo
 
@@ -936,6 +975,8 @@ def procesarIzquierda():
             else:
                 datosPausa[4]['dato'] = 'No'
 
+    audiofx['bep3'].set_volume(volEfectos)
+    audiofx['bep3'].play()
 
 def procesarAbajo():
 
@@ -961,6 +1002,8 @@ def procesarAbajo():
 
         menuPausa.indice = indicesMenu['pausa']
 
+    audiofx['bep4'].set_volume(volEfectos)
+    audiofx['bep4'].play()
 
 def procesarArriba():
 
@@ -986,6 +1029,8 @@ def procesarArriba():
 
         menuPausa.indice = indicesMenu['pausa']
 
+    audiofx['bep4'].set_volume(volEfectos)
+    audiofx['bep4'].play()
 
 def procesarContinuar():
     global estado, reproducirComentario
@@ -995,6 +1040,7 @@ def procesarContinuar():
 
     if estado == estados[0]:    # Inicio
         estado = estados[2]     # Post juego
+        reproducirComentario = []
 
     elif estado == estados[1]:  # Post juego
         estado = estados[2]     # cuenta
@@ -1009,6 +1055,13 @@ def procesarContinuar():
         datosPausa[4]['dato'] = 'No'
         reproducirComentario = []
 
+        reproducirComentario.append( felicidades[random.randint(0, len(felicidades) - 1)] )
+        if jugadorUno.sets > jugadorDos.sets:
+            reproducirComentario.append(jugadorUno.tts)
+        if jugadorDos.sets > jugadorUno.sets:
+            reproducirComentario.append(jugadorDos.tts)
+        reproducirComentario.append( ganaJuego[random.randint(0, len(ganaJuego) - 1)] )
+
     elif estado == estados[5]:  # pausa
         estado = estados[3]     # jugando
         seguirMusica()
@@ -1019,6 +1072,14 @@ def procesarContinuar():
             pasarDatosSets()
             estado = estados[7]
             reproducirComentario = []
+
+            reproducirComentario.append( felicidades[random.randint(0, len(felicidades) - 1)] )
+            if jugadorUno.sets > jugadorDos.sets:
+                reproducirComentario.append(jugadorUno.tts)
+            if jugadorDos.sets > jugadorUno.sets:
+                reproducirComentario.append(jugadorDos.tts)
+            reproducirComentario.append( ganaJuego[random.randint(0, len(ganaJuego) - 1)] )
+
         else:
             cambiarLado()
             if primerSaque == 1:
@@ -1031,7 +1092,8 @@ def procesarContinuar():
         estado = estados[0]     # inicio
         iniciarMarcadores()
 
-    #print ( estado )
+    audiofx['bep5'].set_volume(volEfectos)
+    audiofx['bep5'].play()
 
 def procesarPuntoIzquierda():
 
