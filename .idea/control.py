@@ -14,7 +14,7 @@ fps = 30
 pygame.joystick.init()
 joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
-ancho, alto = 750, 350
+ancho, alto = 1200, 250
 
 ventana = pygame.display.set_mode( ( ancho , alto ) )
 
@@ -23,9 +23,11 @@ pygame.display.set_caption( 'Marcador para tenis de mesa' )
 def mostrarEvento(evento):
 
     ventana.fill((0, 0, 0))
-    fuente = pygame.font.SysFont(name, 200)
+    fuente = pygame.font.SysFont('OCR A Extended', 20)
     imagenDeTexto = fuente.render(str(evento), True, (250, 250, 250))
-    imagenDeTexto.blit(ventana, ( ( ancho / 2 - imagenDeTexto.get_rect(2) / 2 ) , ( alto / 2 - imagenDeTexto.get_rect(3) / 2 ) ) )
+    ventana.blit(imagenDeTexto, ( ( int (ancho / 2 - imagenDeTexto.get_rect()[2] / 2 ) ) , int( ( alto / 2 - imagenDeTexto.get_rect()[3] / 2 ) )) )
+    #ventana.blit(imagenDeTexto, ( 10, 100 ) )
+    print ( f'dibujado: {evento}')
 
 
 def salir():
@@ -39,31 +41,34 @@ while True:
 
     for evento in eventos.get():
 
-        if evento.type == JOYAXISMOTION :
+        if evento.type == pygame.JOYAXISMOTION :
             mostrarEvento(evento)
         
-        if evento.type == JOYBALLMOTION :
+        if evento.type == pygame.JOYBALLMOTION :
             mostrarEvento(evento)
         
-        if evento.type == JOYBUTTONDOWN :
+        if evento.type == pygame.JOYBUTTONDOWN :
             mostrarEvento(evento)
             
-        if evento.type == JOYBUTTONUP : 
+        if evento.type == pygame.JOYBUTTONUP : 
             mostrarEvento(evento)
             
-        if evento.type == JOYHATMOTION :
+        if evento.type == pygame.JOYHATMOTION :
             mostrarEvento(evento)
 
-        if evento.type == JOYDEVICEADDED :
+        if evento.type == pygame.JOYDEVICEADDED :
             mostrarEvento(evento)
             
-        if evento.type == JOYDEVICEREMOVED:
+        if evento.type == pygame.JOYDEVICEREMOVED:
             mostrarEvento(evento)
 
-        if evento.type == KEYDOWN :
+        if evento.type == pygame.KEYDOWN :
             mostrarEvento(evento)
 
-        if evento.type == KEYUP :
+            if evento.key == pygame.K_ESCAPE:
+                salir()
+
+        if evento.type == pygame.KEYUP :
             mostrarEvento(evento)
 
         if evento.type == globales.QUIT:
