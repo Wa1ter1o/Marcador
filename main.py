@@ -13,6 +13,9 @@ pygame.mixer.init()
 mixer.set_reserved(0)
 mixer.music.fadeout(1)
 
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+
 pygame.mouse.set_visible(False)
 
 frames = tiempo.Clock() 
@@ -243,7 +246,7 @@ estados = ( "inicio" , "post juego" , "cuenta",  "jugando" , "post nuevo set" , 
 
 estado = estados[ 0 ]
 
-tPres = { "1" : False , "esc" : False , }
+tPres = { "1" : False , "esc" : False , "jIzquierda" : False , 'jDerecha' : False , 'j0' : False}
 
 botones = False
 arbitro = False
@@ -386,8 +389,17 @@ def dibujarMenu() :
         imgTexto = fuente.render(str( jugadorDos.sets ), True, ( 255, 145, 53 ) )
         canvas.blit(imgTexto, ( ( ancho / 4 * 3 - ( imgTexto.get_rect()[2] ) / 2), alto / 3 * 2 + 25 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
 
+def dibujarPuntero(puntero, lado) :
 
+    if lado == 'izquierda' :
+        fuente = pygame.font.SysFont( iu["fuente"], 300 ) 
+        imgTexto = fuente.render( puntero , True, ( 16, 255, 13 ) )
+        canvas.blit(imgTexto, ( ( ancho / 4 - ( imgTexto.get_rect()[2] ) / 2), alto / 3 * 2 + 25 - ( imgTexto.get_rect()[3] ) / 2 ) )
 
+    elif lado == 'derecha' :
+        fuente = pygame.font.SysFont( iu["fuente"], 300 ) 
+        imgTexto = fuente.render( puntero , True, ( 16, 255, 13 ) )
+        canvas.blit(imgTexto, ( ( ancho - ancho / 4 - ( imgTexto.get_rect()[2] ) / 2), alto / 3 * 2 + 25 - ( imgTexto.get_rect()[3] ) / 2 ) )
 
 def tocarMusica() :
 
@@ -1209,11 +1221,83 @@ while True:
             if evento.key == pygame.K_ESCAPE:
                 tPres["esc"] = False
 
+        
+        if evento.type == pygame.JOYAXISMOTION:
+            
+            if evento.axis == 0:
+
+                if evento.value > 0.5:
+                    procesarDerecha()
+                    tPres['jDerecha'] = True
+                else:
+                    tPres['jDerecha'] = False
+
+                if evento.value < -0.5:
+                    procesarIzquierda()
+                    tPres['jIzquierda'] = True
+                else:
+                    tPres['jIzquierda'] = False
+
+            if evento.axis == 1:
+                if evento.value > 0.5:
+                    procesarAbajo()
+                if evento.value < -0.5:
+                    procesarArriba()
+
+        if evento.type == pygame.JOYBUTTONDOWN:
+            
+            if evento.button == 9:
+                procesarContinuar()
+
+            if evento.button == 6:
+
+                if not ( estado == estados[3] ) :
+                    procesarContinuar()
+
+                elif estado == estados[3] :
+                    if tPres['jIzquierda'] == True :
+                        procesarPuntoIzquierda()
+                    elif tPres['jDerecha'] == True :
+                        procesarPuntoDerecha()
+
+            if evento.button == 7 :
+                if tPres['j0'] == True :
+                    retrocederPunto()
+
+            if evento.button == 0 :
+                tPres['j0'] = True
+
+        if evento.type == pygame.JOYBUTTONUP:
+
+            if evento.button == 0 :
+                tPres['j0'] = False
+
+
+
         if evento.type == globales.QUIT:
             quit()
 
     if tPres["1"] and tPres["esc"]:
         quit()
+
+    if estado == estados[3]:
+        if tPres['jIzquierda'] :
+            dibujarPuntero('+' , 'izquierda')
+        elif tPres['jDerecha'] :
+            dibujarPuntero('+' , 'derecha')
+        elif tPres['j0'] :
+            nAnotaciones = len(anotaciones)
+            if nAnotaciones > 0 :
+                if lado:
+                    if anotaciones[nAnotaciones-1] == 1:
+                        dibujarPuntero( '-' , 'izquierda' )
+                    if anotaciones[nAnotaciones-1] == 2:
+                        dibujarPuntero( '-' , 'derecha' )
+                if not lado:
+                    if anotaciones[nAnotaciones-1] == 2:
+                        dibujarPuntero( '-' , 'izquierda' )
+                    if anotaciones[nAnotaciones-1] == 1:
+                        dibujarPuntero( '-' , 'derecha' )
 
     reproducirCola()
 
