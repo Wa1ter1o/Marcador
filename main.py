@@ -1221,8 +1221,8 @@ while True:
             if evento.key == pygame.K_ESCAPE:
                 tPres["esc"] = False
 
-        
-        if evento.type == pygame.JOYAXISMOTION:
+        #Eventos de joystick
+        """ if evento.type == pygame.JOYAXISMOTION:
             
             if evento.axis == 0:
 
@@ -1270,7 +1270,33 @@ while True:
         if evento.type == pygame.JOYBUTTONUP:
 
             if evento.button == 0 :
-                tPres['j0'] = False
+                tPres['j0'] = False """
+
+        #Eventos del ratón
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+
+            print ('mouse: ', evento)
+
+            if evento.button == 1 :
+                if not ( estado == estados[3] ) :
+                    procesarIzquierda()
+                else:
+                    procesarPuntoIzquierda()
+
+            if evento.button == 3 :
+                if not ( estado == estados[3] ) :
+                    procesarDerecha()
+                else:
+                    procesarPuntoDerecha()
+            
+            if evento.button == 2 : 
+                procesarContinuar()
+
+            if evento.button == 5 :
+                procesarAbajo()
+
+            if evento.button == 4 :
+                procesarArriba()    
 
 
 
@@ -1280,7 +1306,8 @@ while True:
     if tPres["1"] and tPres["esc"]:
         quit()
 
-    if estado == estados[3]:
+    #Dibujado de puntero de joystick
+    """ if estado == estados[3]:
         if tPres['jIzquierda'] :
             dibujarPuntero('+' , 'izquierda')
         elif tPres['jDerecha'] :
@@ -1297,7 +1324,7 @@ while True:
                     if anotaciones[nAnotaciones-1] == 2:
                         dibujarPuntero( '-' , 'izquierda' )
                     if anotaciones[nAnotaciones-1] == 1:
-                        dibujarPuntero( '-' , 'derecha' )
+                        dibujarPuntero( '-' , 'derecha' ) """
 
     reproducirCola()
 
