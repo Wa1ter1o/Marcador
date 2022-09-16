@@ -21,7 +21,7 @@ pygame.mouse.set_visible(False)
 frames = tiempo.Clock() 
 fps = 30                            #velocidad de actualización en frames por segundo
 velAnim = 1                         #tiempo en segundos para hacer cada animación
-pasoAnim = 80                       #incremental de movimiento para todas las animaciones en pixels
+pasoAnim = 150                       #incremental de movimiento para todas las animaciones en pixels
 
 milisegundos = tiempo.get_ticks()
 
@@ -32,9 +32,11 @@ infoPantalla = pygame.display.Info()
 #escala de pantalla
 escala = infoPantalla.current_w / ancho
 #print("escala: " + str(escala))
-escala = 0.7
+escala = 0.7  #Comentar para pantalla completa
 
-ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ) )
+ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ) ) # Ventana 
+#ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ), pygame.FULLSCREEN ) #Pantalla completa
+
 canvas = pygame.Surface( (ancho, alto) )
 
 pygame.display.set_caption( 'Marcador para tenis de mesa' )
@@ -174,6 +176,7 @@ for carpeta in carpetasMusicaFondo:
     nombre = ''
     for letra in reversed(cadena):
         if letra == '\\' :
+        #if letra == '/'  #Quitar comentario para Raspberry y comentar arriba
             break
 
         nombreInvertido = nombreInvertido + letra
@@ -188,28 +191,38 @@ reproducirComentario = []
 reproducirEfecto = []
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& JUGADORES $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-jugadores = [
-     { "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } ,
-     { "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } ,
-     { "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } ,
-     { "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } ,
-     { "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } ,
-     { "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } ,
-     { "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } ,
-     { "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } ,
-     { "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } ,
-     { "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } ,
-     { "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } ,
-     { "nombre" : "Luis" , "tts" : mixer.Sound('assets/sonidos/nombres/Luis.wav') } ,
-     { "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } ,
-     { "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } ,
-     { "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } ,
-     { "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } ,
-     { "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } ,
-     { "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') } ,
-     { "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') }, 
-     { "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } 
-     ]
+jugadores = []
+#jugadores.append({ "nombre" : "Adri" , "tts" : mixer.Sound('assets/sonidos/nombres/Adri.wav') } )
+jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } )
+jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )
+jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
+#jugadores.append({ "nombre" : "Carlos" , "tts" : mixer.Sound('assets/sonidos/nombres/Carlos.wav') } )
+jugadores.append({ "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
+#jugadores.append({ "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } )
+jugadores.append({ "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } )
+jugadores.append({ "nombre" : "Emely" , "tts" : mixer.Sound('assets/sonidos/nombres/Emely.wav') } )
+jugadores.append({ "nombre" : "Gladys" , "tts" : mixer.Sound('assets/sonidos/nombres/Gladys.wav') } )
+jugadores.append({ "nombre" : "Ivon" , "tts" : mixer.Sound('assets/sonidos/nombres/Ivon.wav') } )
+jugadores.append({ "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } )
+#jugadores.append({ "nombre" : "Jorge" , "tts" : mixer.Sound('assets/sonidos/nombres/Jorge.wav') } )
+#jugadores.append({ "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } )
+#jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
+jugadores.append({ "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } )
+jugadores.append({ "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } )
+jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } )
+#jugadores.append({ "nombre" : "Luis" , "tts" : mixer.Sound('assets/sonidos/nombres/Luis.wav') } )
+#jugadores.append({ "nombre" : "Mario" , "tts" : mixer.Sound('assets/sonidos/nombres/Mario.wav') } )
+jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
+jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } )
+jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
+jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
+#jugadores.append({ "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } )
+#jugadores.append({ "nombre" : "Vale" , "tts" : mixer.Sound('assets/sonidos/nombres/Vale.wav') } )
+jugadores.append({ "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') }) 
+jugadores.append({ "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') })
+jugadores.append({ "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } )
+
+     
 
 nombres = []
 for jugador in jugadores:
@@ -234,7 +247,7 @@ saque = True                    #si es True el saque le corresponde al jugador u
 primerSaque = 'izquierda'
 
 milisUltimoPunto = 0
-milisProteccionPunto = 500
+milisProteccionPunto = 10
 
 
 puntosTotalesSet = 0
@@ -502,16 +515,10 @@ def cuentaRegresiva():
 
         if nSet == 1:
             if jugadorUno.saque :
-                if jugadorUno.lado == 'izquieda':
-                    primerSaque = 'izquierda'
-                else:
-                    primerSaque = 'derecha'
+                primerSaque = jugadorUno.lado
 
             elif jugadorDos.saque:
-                if jugadorDos.lado == 'derecha' :
-                    primerSaque == 'derecha'
-                else:
-                    primerSaque == 'izquierda'
+                primerSaque = jugadorDos.lado
 
 
 def comprobarReglas():
@@ -1111,11 +1118,11 @@ def procesarContinuar():
             
             cambiarLado()
 
-            if jugadorUno.saque: 
-                if jugadorUno.lado == primerSaque :
+            if jugadorUno.saque : 
+                if not (jugadorUno.lado == primerSaque) :
                     cambiarSaque() 
             elif jugadorDos.saque:
-                if jugadorDos.lado == primerSaque :
+                if not(jugadorDos.lado == primerSaque) :
                     cambiarSaque()
 
 
@@ -1212,6 +1219,10 @@ while True:
             if evento.key == pygame.K_s:
                 if estado == "jugando":
                     cambiarSaque()
+
+            if evento.key == pygame.K_l:
+                if estado == 'jugando':
+                    cambiarLado()
 
         if evento.type == pygame.KEYUP:
 
