@@ -11,10 +11,11 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 mixer.set_reserved(0)
+
 mixer.music.fadeout(1)
 
-pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+#pygame.joystick.init()
+#joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
 pygame.mouse.set_visible(False)
 
@@ -175,8 +176,7 @@ for carpeta in carpetasMusicaFondo:
     nombreInvertido = ''
     nombre = ''
     for letra in reversed(cadena):
-        if letra == '\\' :
-        #if letra == '/'  #Quitar comentario para Raspberry y comentar arriba
+        if letra == '\\' or letra == '/':
             break
 
         nombreInvertido = nombreInvertido + letra
@@ -223,7 +223,6 @@ jugadores.append({ "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/no
 jugadores.append({ "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } )
 
      
-
 nombres = []
 for jugador in jugadores:
     nombres.append(jugador['nombre'])
@@ -247,7 +246,7 @@ saque = True                    #si es True el saque le corresponde al jugador u
 primerSaque = 'izquierda'
 
 milisUltimoPunto = 0
-milisProteccionPunto = 10
+milisProteccionPunto = 1000
 
 
 puntosTotalesSet = 0
@@ -417,6 +416,7 @@ def dibujarPuntero(puntero, lado) :
 def tocarMusica() :
 
     if musica :
+        mixer.music.stop()
         mixer.music.load(str(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)]))
         mixer.music.play(-1)
 
@@ -508,7 +508,7 @@ def cuentaRegresiva():
             tocarMusica()
             reproducirComentario.append( inicioJuego[ random.randint( 0, len(inicioJuego) - 1 ) ] )
         else:
-            seguirMusica()
+            tocarMusica()
 
         nSet += 1
         reproducirComentario.append( inicioSet[ random.randint( 0, len(inicioSet) - 1 ) ] )
@@ -1155,6 +1155,7 @@ def procesarPuntoDerecha():
             anotarPunto(1)
 
 def quit():
+    #pygame.joystick.quit()   # Quitar comentario si se usa con joystick
     pygame.mixer.quit()
     pygame.font.quit()
     pygame.quit()
