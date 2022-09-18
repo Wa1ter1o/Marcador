@@ -12,8 +12,6 @@ pygame.font.init()
 pygame.mixer.init()
 mixer.set_reserved(0)
 
-mixer.music.fadeout(1)
-
 #pygame.joystick.init()
 #joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
@@ -178,7 +176,6 @@ for carpeta in carpetasMusicaFondo:
     for letra in reversed(cadena):
         if letra == '\\' or letra == '/':
             break
-
         nombreInvertido = nombreInvertido + letra
 
     for letra in reversed(nombreInvertido):
@@ -194,15 +191,15 @@ reproducirEfecto = []
 jugadores = []
 #jugadores.append({ "nombre" : "Adri" , "tts" : mixer.Sound('assets/sonidos/nombres/Adri.wav') } )
 jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } )
-jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )
-jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
+#jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )
+#jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
 #jugadores.append({ "nombre" : "Carlos" , "tts" : mixer.Sound('assets/sonidos/nombres/Carlos.wav') } )
 jugadores.append({ "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
 #jugadores.append({ "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } )
 jugadores.append({ "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } )
 jugadores.append({ "nombre" : "Emely" , "tts" : mixer.Sound('assets/sonidos/nombres/Emely.wav') } )
-jugadores.append({ "nombre" : "Gladys" , "tts" : mixer.Sound('assets/sonidos/nombres/Gladys.wav') } )
-jugadores.append({ "nombre" : "Ivon" , "tts" : mixer.Sound('assets/sonidos/nombres/Ivon.wav') } )
+#jugadores.append({ "nombre" : "Gladys" , "tts" : mixer.Sound('assets/sonidos/nombres/Gladys.wav') } )
+#jugadores.append({ "nombre" : "Ivon" , "tts" : mixer.Sound('assets/sonidos/nombres/Ivon.wav') } )
 jugadores.append({ "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } )
 #jugadores.append({ "nombre" : "Jorge" , "tts" : mixer.Sound('assets/sonidos/nombres/Jorge.wav') } )
 #jugadores.append({ "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } )
@@ -215,12 +212,12 @@ jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nomb
 jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
 jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } )
 jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
-jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
+#jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
 #jugadores.append({ "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } )
 #jugadores.append({ "nombre" : "Vale" , "tts" : mixer.Sound('assets/sonidos/nombres/Vale.wav') } )
 jugadores.append({ "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') }) 
 jugadores.append({ "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') })
-jugadores.append({ "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } )
+#jugadores.append({ "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } )
 
      
 nombres = []
@@ -237,13 +234,13 @@ jugadorDos = clases.Jugador(pygame, "Jugador Dos", mixer.Sound('assets/sonidos/n
 pelota = clases.pelota( "izquierda" )
 
 
-sets = 1    
-nSet = 0                        #sets a jugar
-puntosPorSet = 11               #puntos a jugar por set
-cambioSaque = 2                 #número de saques para hacer cambio de saque
-lado = True                     #define de que lado se encuentra cada jugador
-saque = True                    #si es True el saque le corresponde al jugador uno
-primerSaque = 'izquierda'
+sets = 1                        # sets a jugar
+nSet = 0                        # número de set en juego
+puntosPorSet = 11               # puntos a jugar por set
+cambioSaque = 2                 # número de saques para hacer cambio de saque
+lado = True                     # define de que lado se encuentra cada jugador
+saque = True                    # si es True el saque le corresponde al jugador uno
+primerSaque = 'izquierda'       # registra de que lado se efectuó el primer saque
 
 milisUltimoPunto = 0
 milisProteccionPunto = 1000
@@ -1287,30 +1284,32 @@ while True:
         #Eventos del ratón
         if evento.type == pygame.MOUSEBUTTONDOWN:
 
-            print ('mouse: ', evento)
+            #print ('mouse: ', evento)
 
-            if evento.button == 1 :
+            if evento.button == 1 :     # click izquierdo
                 if not ( estado == estados[3] ) :
                     procesarIzquierda()
                 else:
                     procesarPuntoIzquierda()
 
-            if evento.button == 3 :
+            if evento.button == 3 :     # click derecho
                 if not ( estado == estados[3] ) :
                     procesarDerecha()
                 else:
                     procesarPuntoDerecha()
             
-            if evento.button == 2 : 
+            if evento.button == 2 :     # click scroll
                 procesarContinuar()
 
-            if evento.button == 5 :
+            if evento.button == 5 :     # scroll abajo
                 procesarAbajo()
 
-            if evento.button == 4 :
+            if evento.button == 4 :     # scroll arriba
                 procesarArriba()    
 
-
+            if evento.button == 6 or evento.button == 7 :
+                retrocederPunto()
+  
 
         if evento.type == globales.QUIT:
             quit()
