@@ -1,3 +1,6 @@
+import time
+time.sleep(3) #Tiempo de espera para ejecutar el código.  Esto da tiempo a que el entorno gráfico inicie correctamente
+
 import pygame, sys, random
 from pathlib import Path
 import pygame.locals as globales
@@ -191,7 +194,8 @@ reproducirEfecto = []
 jugadores = []
 #jugadores.append({ "nombre" : "Adri" , "tts" : mixer.Sound('assets/sonidos/nombres/Adri.wav') } )
 jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } )
-#jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )
+#jugadores.append({ "nombre" : "Alesia" , "tts" : mixer.Sound('assets/sonidos/nombres/Alesia.wav') } )
+#jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )fa
 #jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
 #jugadores.append({ "nombre" : "Carlos" , "tts" : mixer.Sound('assets/sonidos/nombres/Carlos.wav') } )
 jugadores.append({ "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
@@ -521,7 +525,7 @@ def cuentaRegresiva():
 def comprobarReglas():
     global estado, reproducirComentario
 
-    if ( puntosPorSet - jugadorUno.puntos <= 1 ) and ( puntosPorSet - jugadorDos.puntos <= 1 ) :
+    if ( jugadorUno.puntos >= puntosPorSet - 1 ) and ( jugadorDos.puntos >= puntosPorSet - 1 ) :
         cambiarSaque()
     elif puntosTotalesSet % cambioSaque == 0:
         cambiarSaque()
