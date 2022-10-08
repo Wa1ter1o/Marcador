@@ -198,17 +198,18 @@ jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/
 #jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )fa
 #jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
 #jugadores.append({ "nombre" : "Carlos" , "tts" : mixer.Sound('assets/sonidos/nombres/Carlos.wav') } )
-jugadores.append({ "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
+#jugadores.append({ "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
 #jugadores.append({ "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } )
-jugadores.append({ "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } )
-jugadores.append({ "nombre" : "Emely" , "tts" : mixer.Sound('assets/sonidos/nombres/Emely.wav') } )
+#jugadores.append({ "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } )
+#jugadores.append({ "nombre" : "Emely" , "tts" : mixer.Sound('assets/sonidos/nombres/Emely.wav') } )
+#jugadores.append({ "nombre" : "Fabrizio" , "tts" : mixer.Sound('assets/sonidos/nombres/Fabrizio.wav') } )
 #jugadores.append({ "nombre" : "Gladys" , "tts" : mixer.Sound('assets/sonidos/nombres/Gladys.wav') } )
 #jugadores.append({ "nombre" : "Ivon" , "tts" : mixer.Sound('assets/sonidos/nombres/Ivon.wav') } )
-jugadores.append({ "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } )
+#jugadores.append({ "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } )
 #jugadores.append({ "nombre" : "Jeffrey" , "tts" : mixer.Sound('assets/sonidos/nombres/Jeffrey.wav') } )
 #jugadores.append({ "nombre" : "Jorge" , "tts" : mixer.Sound('assets/sonidos/nombres/Jorge.wav') } )
 #jugadores.append({ "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } )
-#jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
+jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
 jugadores.append({ "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } )
 jugadores.append({ "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } )
 jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } )
@@ -216,7 +217,9 @@ jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nomb
 #jugadores.append({ "nombre" : "Mario" , "tts" : mixer.Sound('assets/sonidos/nombres/Mario.wav') } )
 jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
 jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } )
-jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
+jugadores.append({ "nombre" : "Sammy" , "tts" : mixer.Sound('assets/sonidos/nombres/Sammy.wav') } )
+#jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
+#jugadores.append({ "nombre" : "Sheny" , "tts" : mixer.Sound('assets/sonidos/nombres/Sheny.wav') } )
 #jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
 #jugadores.append({ "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } )
 #jugadores.append({ "nombre" : "Vale" , "tts" : mixer.Sound('assets/sonidos/nombres/Vale.wav') } )
@@ -248,7 +251,9 @@ saque = True                    # si es True el saque le corresponde al jugador 
 primerSaque = 'izquierda'       # registra de que lado se efectuó el primer saque
 
 milisUltimoPunto = 0
+milisUltimoRetroceso = 0
 milisProteccionPunto = 1000
+milisProteccionRetroceso = 1000
 
 
 puntosTotalesSet = 0
@@ -418,9 +423,21 @@ def dibujarPuntero(puntero, lado) :
 def tocarMusica() :
 
     if musica :
+
+        fallo = True
+
         mixer.music.stop()
-        mixer.music.load(str(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)]))
-        mixer.music.play(-1)
+
+        while ( fallo ) :
+
+            pista = str(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)])
+
+            try:
+                mixer.music.load(pista)
+                mixer.music.play(-1)
+                fallo = False
+            except:
+                print('Pista fallida: ', pista)
 
 def pausarMusica() :
 
@@ -591,7 +608,7 @@ def agregarComentario(clave, puntos):
 
 
 def anotarPunto(jugador):
-    global puntosTotalesSet, milisUltimoPunto
+    global puntosTotalesSet, milisUltimoPunto, anotaciones
 
     if milisProteccionPunto < milisegundos - milisUltimoPunto :
 
@@ -599,8 +616,8 @@ def anotarPunto(jugador):
 
         if jugador == 1:
             jugadorUno.anotarPunto()
-            anotaciones.append(1)
             jugadorUno.puntosSeguidos += 1
+            anotaciones.append({'jugador' : 1 , 'rachaJugadorUno' : jugadorUno.puntosSeguidos , 'rachaJugadorDos' : jugadorDos.puntosSeguidos } )
             jugadorDos.puntosSeguidos = 0
             if narracion :
                 reproducirComentario.append(jugadorUno.tts)
@@ -608,8 +625,8 @@ def anotarPunto(jugador):
 
         if jugador == 2:
             jugadorDos.anotarPunto()
-            anotaciones.append(2)
             jugadorDos.puntosSeguidos += 1
+            anotaciones.append({'jugador' : 2 , 'rachaJugadorUno' : jugadorUno.puntosSeguidos , 'rachaJugadorDos' : jugadorDos.puntosSeguidos } )
             jugadorUno.puntosSeguidos = 0
             if narracion :
                 reproducirComentario.append(jugadorDos.tts)
@@ -627,29 +644,35 @@ def anotarPunto(jugador):
         comprobarReglas()
 
 def retrocederPunto():
-    global anotaciones, puntosTotalesSet, estado
+    global anotaciones, puntosTotalesSet, estado, milisUltimoRetroceso
 
-    if len(anotaciones) > 0 :
+    if milisProteccionRetroceso < milisegundos - milisUltimoRetroceso :
 
-        anotacion = anotaciones.pop()
-        
-        if anotacion == 1 :
-            jugadorUno.puntos -= 1
-            jugadorUno.puntosSeguidos -= 1
-        elif anotacion == 2 : 
-            jugadorDos.puntos -= 1
-            jugadorDos.puntosSeguidos -=1
+        milisUltimoRetroceso = milisegundos
 
-        puntosTotalesSet -= 1
+        if len(anotaciones) > 0 :
 
-        if puntosTotalesSet % 2:
-            cambiarSaque()
+            anotacion = anotaciones.pop()
+            
+            if anotacion['jugador'] == 1 :
+                jugadorUno.puntos -= 1
+                jugadorUno.puntosSeguidos -= 1
+                jugadorDos.puntosSeguidos = anotacion['rachaJugadorDos']
+            elif anotacion['jugador'] == 2 : 
+                jugadorDos.puntos -= 1
+                jugadorDos.puntosSeguidos -=1
+                jugadorUno.puntosSeguidos = anotacion['rachaJugadorUno']
 
-        if estado == estados[4] :
-            estado = estados[3]
-            seguirMusica()
+            puntosTotalesSet -= 1
 
-        audiofx['puntoMenos'].play()
+            if puntosTotalesSet % 2:
+                cambiarSaque()
+
+            if estado == estados[4] :
+                estado = estados[3]
+                seguirMusica()
+
+            audiofx['puntoMenos'].play()
 
 
 
