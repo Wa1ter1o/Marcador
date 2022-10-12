@@ -34,10 +34,10 @@ infoPantalla = pygame.display.Info()
 #escala de pantalla
 escala = infoPantalla.current_w / ancho
 #print("escala: " + str(escala))
-escala = 0.7  #Comentar para pantalla completa
+#escala = 0.7  #Comentar para pantalla completa
 
-ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ) ) # Ventana 
-#ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ), pygame.FULLSCREEN ) #Pantalla completa
+#ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ) ) # Ventana 
+ventana = pygame.display.set_mode( ( int( ancho * escala  ), int( alto * escala ) ), pygame.FULLSCREEN ) #Pantalla completa
 
 canvas = pygame.Surface( (ancho, alto) )
 
@@ -209,7 +209,7 @@ jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/
 #jugadores.append({ "nombre" : "Jeffrey" , "tts" : mixer.Sound('assets/sonidos/nombres/Jeffrey.wav') } )
 #jugadores.append({ "nombre" : "Jorge" , "tts" : mixer.Sound('assets/sonidos/nombres/Jorge.wav') } )
 #jugadores.append({ "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } )
-jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
+# jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
 jugadores.append({ "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } )
 jugadores.append({ "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } )
 jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } )
@@ -217,7 +217,7 @@ jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nomb
 #jugadores.append({ "nombre" : "Mario" , "tts" : mixer.Sound('assets/sonidos/nombres/Mario.wav') } )
 jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
 jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } )
-jugadores.append({ "nombre" : "Sammy" , "tts" : mixer.Sound('assets/sonidos/nombres/Sammy.wav') } )
+# jugadores.append({ "nombre" : "Sammy" , "tts" : mixer.Sound('assets/sonidos/nombres/Sammy.wav') } )
 #jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
 #jugadores.append({ "nombre" : "Sheny" , "tts" : mixer.Sound('assets/sonidos/nombres/Sheny.wav') } )
 #jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
@@ -617,7 +617,8 @@ def anotarPunto(jugador):
         if jugador == 1:
             jugadorUno.anotarPunto()
             jugadorUno.puntosSeguidos += 1
-            anotaciones.append({'jugador' : 1 , 'rachaJugadorUno' : jugadorUno.puntosSeguidos , 'rachaJugadorDos' : jugadorDos.puntosSeguidos } )
+            anotaciones.append({'jugador' : 1 , 'rachaJugadorUno' : jugadorUno.puntosSeguidos , 
+                'rachaJugadorDos' : jugadorDos.puntosSeguidos, 'saque' : saque } )
             jugadorDos.puntosSeguidos = 0
             if narracion :
                 reproducirComentario.append(jugadorUno.tts)
@@ -626,7 +627,8 @@ def anotarPunto(jugador):
         if jugador == 2:
             jugadorDos.anotarPunto()
             jugadorDos.puntosSeguidos += 1
-            anotaciones.append({'jugador' : 2 , 'rachaJugadorUno' : jugadorUno.puntosSeguidos , 'rachaJugadorDos' : jugadorDos.puntosSeguidos } )
+            anotaciones.append({'jugador' : 2 , 'rachaJugadorUno' : jugadorUno.puntosSeguidos , 
+            'rachaJugadorDos' : jugadorDos.puntosSeguidos, 'saque' : saque } )
             jugadorUno.puntosSeguidos = 0
             if narracion :
                 reproducirComentario.append(jugadorDos.tts)
@@ -644,7 +646,7 @@ def anotarPunto(jugador):
         comprobarReglas()
 
 def retrocederPunto():
-    global anotaciones, puntosTotalesSet, estado, milisUltimoRetroceso
+    global anotaciones, puntosTotalesSet, estado, milisUltimoRetroceso, reproducirComentario
 
     if milisProteccionRetroceso < milisegundos - milisUltimoRetroceso :
 
@@ -665,7 +667,7 @@ def retrocederPunto():
 
             puntosTotalesSet -= 1
 
-            if puntosTotalesSet % 2:
+            if not (anotacion['saque'] == saque) :
                 cambiarSaque()
 
             if estado == estados[4] :
@@ -673,6 +675,7 @@ def retrocederPunto():
                 seguirMusica()
 
             audiofx['puntoMenos'].play()
+            reproducirComentario = []
 
 
 
@@ -780,6 +783,8 @@ def cambiarSaque():
     jugadorDos.saque = not jugadorDos.saque
 
     pelota.cambiarLado()
+
+    saque = not saque
 
 def dibujarCanvas():
 
