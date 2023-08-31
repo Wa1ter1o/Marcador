@@ -195,8 +195,9 @@ jugadores = []
 #jugadores.append({ "nombre" : "Adri" , "tts" : mixer.Sound('assets/sonidos/nombres/Adri.wav') } )
 jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } )
 #jugadores.append({ "nombre" : "Alesia" , "tts" : mixer.Sound('assets/sonidos/nombres/Alesia.wav') } )
-#jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )fa
+#jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )
 #jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
+jugadores.append({ "nombre" : "Byron" , "tts" : mixer.Sound('assets/sonidos/nombres/Byron.wav') } )
 #jugadores.append({ "nombre" : "Carlos" , "tts" : mixer.Sound('assets/sonidos/nombres/Carlos.wav') } )
 #jugadores.append({ "nombre" : "Cristian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
 #jugadores.append({ "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } )
@@ -222,6 +223,7 @@ jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombr
 #jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
 #jugadores.append({ "nombre" : "Sheny" , "tts" : mixer.Sound('assets/sonidos/nombres/Sheny.wav') } )
 #jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
+#jugadores.append({ "nombre" : "Tio" , "tts" : mixer.Sound('assets/sonidos/nombres/Tio.wav') } )
 #jugadores.append({ "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } )
 #jugadores.append({ "nombre" : "Vale" , "tts" : mixer.Sound('assets/sonidos/nombres/Vale.wav') } )
 jugadores.append({ "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') }) 
