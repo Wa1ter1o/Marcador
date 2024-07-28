@@ -19,7 +19,28 @@ La versión más optimizada se encuentra en la rama 'raspi', por lo que funciona
 
 ### Iniciar el marcador al encender:
 
-- abre la terminal y colocate en /etc/xdg/autostart
+- Abre la terminal y colocate en /etc/xdg/autostart
+- Crea un script para ejecutar al iniciar el escritorio
+
+     ```shell
+    sudo nano iniciarMarcador.desktop
+    ```
+
+- Dentro de el script escribe:
+
+    ```desktop
+    [Desktop Entry]
+    Type=Application
+    Exec=/bin/sh /home/tu_usuario/iniciarMarcador.sh
+    Name=Iniciar Marcador
+    ```
+
+- Crea un archivo llamado iniciarMarcador.sh en el home con los comandos necesarios para por ejemplo:
+
+    ```desktop
+    cd Marcador
+    python main.py
+    ```
 
 
 Puedes agregar la música de tu preferencia en en las carpeta assets/sonidos/fondo , crea una nueva carpeta para agregar una categoría y dentro de ella ingresa tus pistas
