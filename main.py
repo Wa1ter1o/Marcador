@@ -214,7 +214,7 @@ jugadores.append({ "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombr
 #jugadores.append({ "nombre" : "Jeffrey" , "tts" : mixer.Sound('assets/sonidos/nombres/Jeffrey.wav') } )
 #jugadores.append({ "nombre" : "Jorge" , "tts" : mixer.Sound('assets/sonidos/nombres/Jorge.wav') } )
 #jugadores.append({ "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } )
-jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
+#jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
 jugadores.append({ "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } )
 jugadores.append({ "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } )
 jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } )
@@ -230,6 +230,7 @@ jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombr
 #jugadores.append({ "nombre" : "Tio" , "tts" : mixer.Sound('assets/sonidos/nombres/Tio.wav') } )
 #jugadores.append({ "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } )
 #jugadores.append({ "nombre" : "Vale" , "tts" : mixer.Sound('assets/sonidos/nombres/Vale.wav') } )
+#jugadores.append({ "nombre" : "Vero" , "tts" : mixer.Sound('assets/sonidos/nombres/Vero.wav') } )
 jugadores.append({ "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') }) 
 jugadores.append({ "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') })
 #jugadores.append({ "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } )
@@ -494,7 +495,7 @@ def cuentaRegresiva():
     canvas.blit(imgTexto, ( ( ancho / 2 - ( imgTexto.get_rect()[2] ) / 2), alto / 2 - ( imgTexto.get_rect()[3] ) / 2 ) ) 
 
     if segFaltantes < 4 and beeps[0] == 0 :
-        audiofx['bep'].set_volume(volEfectos)
+        audiofx['bep'].set_volume(volEfectos/10)
         audiofx['bep'].play()
         if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -502,7 +503,7 @@ def cuentaRegresiva():
         beeps[0] = 1
         
     if segFaltantes < 3 and beeps[1] == 0 :
-        audiofx['bep'].set_volume(volEfectos)
+        audiofx['bep'].set_volume(volEfectos/10)
         audiofx['bep'].play()
         if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -510,7 +511,7 @@ def cuentaRegresiva():
         beeps[1] = 1
 
     if segFaltantes < 2 and beeps[2] == 0 :
-        audiofx['bep'].set_volume(volEfectos)
+        audiofx['bep'].set_volume(volEfectos/10)
         audiofx['bep'].play()
         if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -518,7 +519,7 @@ def cuentaRegresiva():
         beeps[2] = 1
 
     if segFaltantes < 1 and beeps[3] == 0 :
-        audiofx['bep2'].set_volume(volEfectos)
+        audiofx['bep2'].set_volume(volEfectos/10)
         audiofx['bep2'].play()
         if nSet == 0 and datosInicio[4]['indice'] == 2:
             if random.randint(0, 1) == 1:
@@ -916,7 +917,7 @@ def procesarDerecha():
             else:
                 datosPausa[4]['dato'] = 'No'
 
-    audiofx['bep3'].set_volume(volEfectos)
+    audiofx['bep3'].set_volume(volEfectos/10)
     audiofx['bep3'].play()
 
 def procesarIzquierda():
@@ -1045,7 +1046,7 @@ def procesarIzquierda():
             else:
                 datosPausa[4]['dato'] = 'No'
 
-    audiofx['bep3'].set_volume(volEfectos)
+    audiofx['bep3'].set_volume(volEfectos/10)
     audiofx['bep3'].play()
 
 def procesarAbajo():
@@ -1072,7 +1073,7 @@ def procesarAbajo():
 
         menuPausa.indice = indicesMenu['pausa']
 
-    audiofx['bep4'].set_volume(volEfectos)
+    audiofx['bep4'].set_volume(volEfectos/10)
     audiofx['bep4'].play()
 
 def procesarArriba():
@@ -1099,7 +1100,7 @@ def procesarArriba():
 
         menuPausa.indice = indicesMenu['pausa']
 
-    audiofx['bep4'].set_volume(volEfectos)
+    audiofx['bep4'].set_volume(volEfectos/10)
     audiofx['bep4'].play()
 
 def procesarContinuar():
@@ -1171,7 +1172,7 @@ def procesarContinuar():
         estado = estados[0]     # inicio
         iniciarMarcadores()
 
-    audiofx['bep5'].set_volume(volEfectos)
+    audiofx['bep5'].set_volume(volEfectos/10)
     audiofx['bep5'].play()
 
 def procesarPuntoIzquierda():
