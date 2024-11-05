@@ -165,6 +165,16 @@ ganaJuego = []
 for ruta in rutas:
     ganaJuego.append(mixer.Sound(str(ruta)))
 
+rutaBase = 'assets/sonidos/frases/Diego/numeros/'
+numeros = [mixer.Sound(rutaBase + '0.wav'), mixer.Sound(rutaBase + '1.wav'), mixer.Sound(rutaBase + '2.wav'), 
+mixer.Sound(rutaBase + '3.wav'), mixer.Sound(rutaBase + '4.wav'), mixer.Sound(rutaBase + '5.wav'), mixer.Sound(rutaBase + '6.wav'), 
+mixer.Sound(rutaBase + '7.wav'), mixer.Sound(rutaBase + '8.wav'), mixer.Sound(rutaBase + '9.wav'), mixer.Sound(rutaBase + '10.wav'),
+mixer.Sound(rutaBase + '11.wav'), mixer.Sound(rutaBase + '12.wav'), mixer.Sound(rutaBase + '13.wav'), mixer.Sound(rutaBase + '14.wav'),
+mixer.Sound(rutaBase + '15.wav'), mixer.Sound(rutaBase + '16.wav'), mixer.Sound(rutaBase + '17.wav'), mixer.Sound(rutaBase + '18.wav'),
+mixer.Sound(rutaBase + '19.wav'), mixer.Sound(rutaBase + '20.wav'), mixer.Sound(rutaBase + '21.wav'), mixer.Sound(rutaBase + '22.wav'),
+mixer.Sound(rutaBase + '23.wav'), mixer.Sound(rutaBase + '24.wav'), mixer.Sound(rutaBase + '25.wav'), mixer.Sound(rutaBase + '26.wav'),
+mixer.Sound(rutaBase + '27.wav'), mixer.Sound(rutaBase + '28.wav'), mixer.Sound(rutaBase + '29.wav'), mixer.Sound(rutaBase + '30.wav')]
+
 
 carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
 rutasMusica = []
@@ -260,6 +270,7 @@ cambioSaque = 2                 # número de saques para hacer cambio de saque
 lado = True                     # define de que lado se encuentra cada jugador
 saque = True                    # si es True el saque le corresponde al jugador uno
 primerSaque = 'izquierda'       # registra de que lado se efectuó el primer saque
+puntosDeSet = 0                 # puntos de set para anunciar
 
 milisUltimoPunto = 0
 milisUltimoRetroceso = 0
@@ -617,6 +628,24 @@ def agregarComentario(clave, puntos):
         elif puntos > 10:
             reproducirComentario.append(masDiezPuntos[random.randint(0, len(masDiezPuntos) - 1 ) ] )
 
+def anunciarMarcador():
+    global reproducirComentario
+
+    if jugadorUno.puntos <= 30  and jugadorDos.puntos <= 30:
+        #Si el saque lo tiene el jugador uno
+        if jugadorUno.saque:
+            reproducirComentario.append(numeros[jugadorUno.puntos])
+            reproducirComentario.append(numeros[jugadorDos.puntos])
+        #Si el saque lo tiene el jugador dos
+        else :
+            reproducirComentario.append(numeros[jugadorDos.puntos])
+            reproducirComentario.append(numeros[jugadorUno.puntos])
+
+def comentar():
+    global reproducirComentario
+
+    
+
 
 def anotarPunto(jugador):
     global puntosTotalesSet, milisUltimoPunto, anotaciones
@@ -655,6 +684,8 @@ def anotarPunto(jugador):
             datosSets[nSet - 1][1] = jugadorDos.puntos
 
         comprobarReglas()
+        anunciarMarcador()
+        comentar()  
 
 def retrocederPunto():
     global anotaciones, puntosTotalesSet, estado, milisUltimoRetroceso, reproducirComentario
