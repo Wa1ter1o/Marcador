@@ -45,8 +45,8 @@ pygame.display.set_caption( 'Marcador para tenis de mesa' )
 
 #-------------------------Cargando Imágenes y efectos de sonido--------------------------------------------------------------
 
-#fondoOriginal = pygame.image.load( "assets/img/fondo.jpg" )
-#fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
+fondoOriginal = pygame.image.load( "assets/img/fondo.jpg" )
+fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
 
 ganador = pygame.image.load( 'assets/img/ganador.jpg' )
 
@@ -403,8 +403,8 @@ def mover():
 
 def dibujarFondo():
 
-    #canvas.blit( fondo, ( 0, 0 ) )
-    canvas.fill((24, 24, 27))
+    canvas.blit( fondo, ( 0, 0 ) )
+    #canvas.fill((24, 24, 27))
 
 
 def dibujarJugadores():
