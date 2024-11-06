@@ -45,8 +45,8 @@ pygame.display.set_caption( 'Marcador para tenis de mesa' )
 
 #-------------------------Cargando Imágenes y efectos de sonido--------------------------------------------------------------
 
-fondoOriginal = pygame.image.load( "assets/img/fondo.jpg" )
-fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
+#fondoOriginal = pygame.image.load( "assets/img/fondo.jpg" )
+#fondo = pygame.transform.scale(fondoOriginal, ( int( ancho ) , int( alto  ) ) )
 
 ganador = pygame.image.load( 'assets/img/ganador.jpg' )
 
@@ -175,6 +175,14 @@ mixer.Sound(rutaBase + '19.wav'), mixer.Sound(rutaBase + '20.wav'), mixer.Sound(
 mixer.Sound(rutaBase + '23.wav'), mixer.Sound(rutaBase + '24.wav'), mixer.Sound(rutaBase + '25.wav'), mixer.Sound(rutaBase + '26.wav'),
 mixer.Sound(rutaBase + '27.wav'), mixer.Sound(rutaBase + '28.wav'), mixer.Sound(rutaBase + '29.wav'), mixer.Sound(rutaBase + '30.wav')]
 
+rutaBase = 'assets/sonidos/frases/Diego/numerales/'
+numerales = [mixer.Sound(rutaBase + '1r.wav'), mixer.Sound(rutaBase + '1r.wav'), mixer.Sound(rutaBase + '2do.wav'), mixer.Sound(rutaBase + '3r.wav'),
+mixer.Sound(rutaBase + '4to.wav'), mixer.Sound(rutaBase + '5to.wav'), mixer.Sound(rutaBase + '6to.wav'), mixer.Sound(rutaBase + '7mo.wav'),
+mixer.Sound(rutaBase + '8vo.wav'), mixer.Sound(rutaBase + '9no.wav'), mixer.Sound(rutaBase + '10mo.wav')]
+
+empate = mixer.Sound('assets/sonidos/frases/Diego/comentarios/empate1.wav')
+puntoDeSet = mixer.Sound('assets/sonidos/frases/Diego/info/punto-de-set.wav')
+puntoDePartido = mixer.Sound('assets/sonidos/frases/Diego/info/punto-de-partido.wav')
 
 carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
 rutasMusica = []
@@ -204,45 +212,46 @@ reproducirEfecto = []
 jugadores = []
 #jugadores.append({ "nombre" : "Adri" , "tts" : mixer.Sound('assets/sonidos/nombres/Adri.wav') } )
 jugadores.append({ "nombre" : "Adrián" , "tts" : mixer.Sound('assets/sonidos/nombres/Adrian.wav') } )
-#jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } )
-#jugadores.append({ "nombre" : "Alesia" , "tts" : mixer.Sound('assets/sonidos/nombres/Alesia.wav') } )
-#jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )
-#jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
-#jugadores.append({ "nombre" : "Andrés" , "tts" : mixer.Sound('assets/sonidos/nombres/Andres.wav') } )
-#jugadores.append({ "nombre" : "Andrew" , "tts" : mixer.Sound('assets/sonidos/nombres/Andrew.wav') } )
-#jugadores.append({ "nombre" : "Andrick" , "tts" : mixer.Sound('assets/sonidos/nombres/Andrick.wav') } )
-#jugadores.append({ "nombre" : "Byron" , "tts" : mixer.Sound('assets/sonidos/nombres/Byron.wav') } )
+jugadores.append({ "nombre" : "Alejandro" , "tts" : mixer.Sound('assets/sonidos/nombres/Alejandro.wav') } )
+jugadores.append({ "nombre" : "Alesia" , "tts" : mixer.Sound('assets/sonidos/nombres/Alesia.wav') } )
+jugadores.append({ "nombre" : "Alex" , "tts" : mixer.Sound('assets/sonidos/nombres/Alex.wav') } )
+jugadores.append({ "nombre" : "Ami" , "tts" : mixer.Sound('assets/sonidos/nombres/Ami.wav') } )
+jugadores.append({ "nombre" : "Andrés" , "tts" : mixer.Sound('assets/sonidos/nombres/Andres.wav') } )
+jugadores.append({ "nombre" : "Andrew" , "tts" : mixer.Sound('assets/sonidos/nombres/Andrew.wav') } )
+jugadores.append({ "nombre" : "Andrick" , "tts" : mixer.Sound('assets/sonidos/nombres/Andrick.wav') } )
+jugadores.append({ "nombre" : "Byron" , "tts" : mixer.Sound('assets/sonidos/nombres/Byron.wav') } )
 #jugadores.append({ "nombre" : "Carlos" , "tts" : mixer.Sound('assets/sonidos/nombres/Carlos.wav') } )
-#jugadores.append({ "nombre" : "Christian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
-#jugadores.append({ "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } )
+jugadores.append({ "nombre" : "Christian" , "tts" : mixer.Sound('assets/sonidos/nombres/Cristian.wav') } )
+jugadores.append({ "nombre" : "Daniela" , "tts" : mixer.Sound('assets/sonidos/nombres/Daniela.wav') } )
 #jugadores.append({ "nombre" : "Diego" , "tts" : mixer.Sound('assets/sonidos/nombres/Diego.wav') } )
-#jugadores.append({ "nombre" : "Emely" , "tts" : mixer.Sound('assets/sonidos/nombres/Emely.wav') } )
+jugadores.append({ "nombre" : "Emely" , "tts" : mixer.Sound('assets/sonidos/nombres/Emely.wav') } )
 #jugadores.append({ "nombre" : "Fabrizio" , "tts" : mixer.Sound('assets/sonidos/nombres/Fabrizio.wav') } )
 #jugadores.append({ "nombre" : "Gladys" , "tts" : mixer.Sound('assets/sonidos/nombres/Gladys.wav') } )
-#jugadores.append({ "nombre" : "Ivon" , "tts" : mixer.Sound('assets/sonidos/nombres/Ivon.wav') } )
+jugadores.append({ "nombre" : "Ivon" , "tts" : mixer.Sound('assets/sonidos/nombres/Ivon.wav') } )
 jugadores.append({ "nombre" : "Javi" , "tts" : mixer.Sound('assets/sonidos/nombres/Javi.wav') } )
 #jugadores.append({ "nombre" : "Jeffrey" , "tts" : mixer.Sound('assets/sonidos/nombres/Jeffrey.wav') } )
 #jugadores.append({ "nombre" : "Jorge" , "tts" : mixer.Sound('assets/sonidos/nombres/Jorge.wav') } )
 jugadores.append({ "nombre" : "Jonathan" , "tts" : mixer.Sound('assets/sonidos/nombres/Jonathan.wav') } )
 #jugadores.append({ "nombre" : "José" , "tts" : mixer.Sound('assets/sonidos/nombres/Jose.wav') } )
-#jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
+jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
 jugadores.append({ "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } )
 jugadores.append({ "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } )
+jugadores.append({ "nombre" : "Junieth" , "tts" : mixer.Sound('assets/sonidos/nombres/Junieth.wav') } )
 jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } )
 #jugadores.append({ "nombre" : "Luis" , "tts" : mixer.Sound('assets/sonidos/nombres/Luis.wav') } )
 #jugadores.append({ "nombre" : "Mario" , "tts" : mixer.Sound('assets/sonidos/nombres/Mario.wav') } )
-#jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
-#jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } )
+jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
+jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } )
 jugadores.append({ "nombre" : "Roger" , "tts" : mixer.Sound('assets/sonidos/nombres/Roger.wav') } )
 #jugadores.append({ "nombre" : "Sammy" , "tts" : mixer.Sound('assets/sonidos/nombres/Sammy.wav') } )
 #jugadores.append({ "nombre" : "Sandra" , "tts" : mixer.Sound('assets/sonidos/nombres/Sandra.wav') } )
-#jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
+jugadores.append({ "nombre" : "Sebas" , "tts" : mixer.Sound('assets/sonidos/nombres/Sebas.wav') } )
 #jugadores.append({ "nombre" : "Sheny" , "tts" : mixer.Sound('assets/sonidos/nombres/Sheny.wav') } )
-#jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
+jugadores.append({ "nombre" : "Titi" , "tts" : mixer.Sound('assets/sonidos/nombres/Titi.wav') } )
 #jugadores.append({ "nombre" : "Tio" , "tts" : mixer.Sound('assets/sonidos/nombres/Tio.wav') } )
 #jugadores.append({ "nombre" : "Tito" , "tts" : mixer.Sound('assets/sonidos/nombres/Tito.wav') } )
 #jugadores.append({ "nombre" : "Vale" , "tts" : mixer.Sound('assets/sonidos/nombres/Vale.wav') } )
-#jugadores.append({ "nombre" : "Vero" , "tts" : mixer.Sound('assets/sonidos/nombres/Vero.wav') } )
+jugadores.append({ "nombre" : "Vero" , "tts" : mixer.Sound('assets/sonidos/nombres/Vero.wav') } )
 jugadores.append({ "nombre" : "Walter" , "tts" : mixer.Sound('assets/sonidos/nombres/Walter.wav') }) 
 #jugadores.append({ "nombre" : "William" , "tts" : mixer.Sound('assets/sonidos/nombres/William.wav') })
 #jugadores.append({ "nombre" : "Willy" , "tts" : mixer.Sound('assets/sonidos/nombres/Willy.wav') } )
@@ -263,14 +272,15 @@ jugadorDos = clases.Jugador(pygame, "Jugador Dos", mixer.Sound('assets/sonidos/n
 pelota = clases.pelota( "izquierda" )
 
 
-sets = 1                        # sets a jugar
+sets = 3                        # sets a jugar
 nSet = 0                        # número de set en juego
 puntosPorSet = 11               # puntos a jugar por set
 cambioSaque = 2                 # número de saques para hacer cambio de saque
 lado = True                     # define de que lado se encuentra cada jugador
 saque = True                    # si es True el saque le corresponde al jugador uno
 primerSaque = 'izquierda'       # registra de que lado se efectuó el primer saque
-puntosDeSet = 0                 # puntos de set para anunciar
+puntosDeSet1 = 0                 # puntos de set para anunciar
+puntosDeSet2 = 0                 # puntos de set para anunciar
 
 milisUltimoPunto = 0
 milisUltimoRetroceso = 0
@@ -315,7 +325,7 @@ datosInicio = [
         'titulo' : 'Pts. Por Set' , 'dato' : puntosPorSet
     },
     {
-        'titulo' : 'Saque Inicial' , 'dato' : jugadorUno.nombre, 'datos' : [ jugadorUno.nombre, jugadorDos.nombre, 'Sorteo'], 'indice' : 0
+        'titulo' : 'Saque Inicial' , 'dato' : 'Sorteo', 'datos' : [ jugadorUno.nombre, jugadorDos.nombre, 'Sorteo'], 'indice' : 2
     }
 
 ]
@@ -393,7 +403,9 @@ def mover():
 
 def dibujarFondo():
 
-    canvas.blit( fondo, ( 0, 0 ) )
+    #canvas.blit( fondo, ( 0, 0 ) )
+    canvas.fill((24, 24, 27))
+
 
 def dibujarJugadores():
     canvas.blit(jugadorUno.generarImagen(), jugadorUno.pos)
@@ -642,7 +654,33 @@ def anunciarMarcador():
             reproducirComentario.append(numeros[jugadorUno.puntos])
 
 def comentar():
-    global reproducirComentario
+    global reproducirComentario, puntosDeSet1, puntosDeSet2
+
+    if jugadorUno.puntos == jugadorDos.puntos:
+        reproducirComentario.append(empate)
+    else:
+    
+        if (jugadorUno.puntos >= puntosPorSet - 1 and jugadorDos.puntos < jugadorUno.puntos) :
+            puntosDeSet1 += 1
+
+            if puntosDeSet1 <= 10 :
+                reproducirComentario.append(numerales[puntosDeSet1])
+
+            if jugadorUno.sets == (sets - 1) / 2 :
+                reproducirComentario.append(puntoDePartido)
+            else:
+                reproducirComentario.append(puntoDeSet)
+
+        if (jugadorDos.puntos >= puntosPorSet - 1 and jugadorUno.puntos < jugadorDos.puntos) :
+            puntosDeSet2 += 1
+
+            if puntosDeSet2 <= 10 :
+                reproducirComentario.append(numerales[puntosDeSet2])
+
+            if jugadorDos.sets == (sets - 1) / 2 :
+                reproducirComentario.append(puntoDePartido)
+            else:
+                reproducirComentario.append(puntoDeSet)
 
     
 
@@ -684,8 +722,10 @@ def anotarPunto(jugador):
             datosSets[nSet - 1][1] = jugadorDos.puntos
 
         comprobarReglas()
-        anunciarMarcador()
-        comentar()  
+
+        if estado == estados[3] :
+            anunciarMarcador()
+            comentar()  
 
 def retrocederPunto():
     global anotaciones, puntosTotalesSet, estado, milisUltimoRetroceso, reproducirComentario
@@ -784,13 +824,15 @@ def pasarDatosSet() : # Transfiere datos del set acutal a datosPostNuevoSet
     datosPostNuevoSet[2]['dato'] = jugadorDos.puntos
 
 def iniciarPuntos():
-    global puntosTotalesSet, anotaciones
+    global puntosTotalesSet, anotaciones, puntosDeSet1, puntosDeSet2
 
     jugadorUno.puntos = 0
     jugadorUno.puntosSeguidos = 0
+    puntosDeSet1 = 0
 
     jugadorDos.puntos = 0
     jugadorDos.puntosSeguidos = 0
+    puntosDeSet2 = 0
 
     puntosTotalesSet = 0
 
@@ -1391,26 +1433,6 @@ while True:
 
     if tPres["1"] and tPres["esc"]:
         quit()
-
-    #Dibujado de puntero de joystick
-    """ if estado == estados[3]:
-        if tPres['jIzquierda'] :
-            dibujarPuntero('+' , 'izquierda')
-        elif tPres['jDerecha'] :
-            dibujarPuntero('+' , 'derecha')
-        elif tPres['j0'] :
-            nAnotaciones = len(anotaciones)
-            if nAnotaciones > 0 :
-                if lado:
-                    if anotaciones[nAnotaciones-1] == 1:
-                        dibujarPuntero( '-' , 'izquierda' )
-                    if anotaciones[nAnotaciones-1] == 2:
-                        dibujarPuntero( '-' , 'derecha' )
-                if not lado:
-                    if anotaciones[nAnotaciones-1] == 2:
-                        dibujarPuntero( '-' , 'izquierda' )
-                    if anotaciones[nAnotaciones-1] == 1:
-                        dibujarPuntero( '-' , 'derecha' ) """
 
     reproducirCola()
 

@@ -32,8 +32,9 @@ class Jugador:
             "compSets": 225
         }
 
-        imagen = self.pygame.Surface( ( 900, 900), self.pygame.SRCALPHA, 32 )
-        imagen = imagen.convert_alpha()
+        #imagen = self.pygame.Surface( ( 900, 900), self.pygame.SRCALPHA, 32 )
+        imagen = self.pygame.Surface( ( 900, 900) )
+        #imagen = imagen.convert_alpha()
 
         imagen.blit( self.fondo, ( 0, 0 ) )
 
