@@ -188,6 +188,7 @@ carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
 rutasMusica = []
 nombreCarpetas = []
 indiceMusicaFondo = 0
+indiceMusicaInicio = 0
 
 for carpeta in carpetasMusicaFondo:
     rutasMusica.append(list(Path(carpeta).iterdir()))
@@ -237,8 +238,8 @@ jugadores.append({ "nombre" : "Jonathan" , "tts" : mixer.Sound('assets/sonidos/n
 jugadores.append({ "nombre" : "Josue" , "tts" : mixer.Sound('assets/sonidos/nombres/Josue.wav') } )
 jugadores.append({ "nombre" : "Jugador Uno" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador uno.wav') } )
 jugadores.append({ "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonidos/nombres/Jugador dos.wav') } )
-jugadores.append({ "nombre" : "Junieth" , "tts" : mixer.Sound('assets/sonidos/nombres/Junieth.wav') } )
-jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } )
+#jugadores.append({ "nombre" : "Junieth" , "tts" : mixer.Sound('assets/sonidos/nombres/Junieth.wav') } )
+#jugadores.append({ "nombre" : "Lilly" , "tts" : mixer.Sound('assets/sonidos/nombres/Lilly.wav') } )
 #jugadores.append({ "nombre" : "Luis" , "tts" : mixer.Sound('assets/sonidos/nombres/Luis.wav') } )
 #jugadores.append({ "nombre" : "Mario" , "tts" : mixer.Sound('assets/sonidos/nombres/Mario.wav') } )
 jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
@@ -329,6 +330,9 @@ datosInicio = [
     },
     {
         'titulo' : 'Saque Inicial' , 'dato' : 'Sorteo', 'datos' : [ jugadorUno.nombre, jugadorDos.nombre, 'Sorteo'], 'indice' : 2
+    },
+    {
+        'titulo' : 'Música' , 'dato' : 'Apagado'
     }
 
 ]
@@ -457,24 +461,38 @@ def dibujarPuntero(puntero, lado) :
         imgTexto = fuente.render( puntero , True, ( 16, 255, 13 ) )
         canvas.blit(imgTexto, ( ( ancho - ancho / 4 - ( imgTexto.get_rect()[2] ) / 2), alto / 3 * 2 + 25 - ( imgTexto.get_rect()[3] ) / 2 ) )
 
-def tocarMusica() :
+def tocarMusica(ev = False) :
 
-    if musica :
-
-        fallo = True
-
+    if not musica :
+        mixer.music.stop()
+        return
+    
+    
+    fallo = True
+    if not ev :
         mixer.music.stop()
 
-        while ( fallo ) :
+    #Evento para reiniciar la música
+    pygame.mixer.music.set_endevent()  # Desactiva el evento en otros estados
+    if estado == estados[0]:
+        pygame.mixer.music.set_endevent(pygame.USEREVENT)
 
+    while ( fallo ) :
+
+        if (estado == estados[0]):
+            pista = str(rutasMusica[indiceMusicaInicio][random.randint(0, len(rutasMusica[indiceMusicaInicio]) - 1)])
+        else:
             pista = str(rutasMusica[indiceMusicaFondo][random.randint(0, len(rutasMusica[indiceMusicaFondo]) - 1)])
 
-            try:
-                mixer.music.load(pista)
+        try:
+            mixer.music.load(pista)
+            if(estado == estados[0]):
+                mixer.music.play()
+            else:
                 mixer.music.play(-1)
-                fallo = False
-            except:
-                print('Pista fallida: ', pista)
+            fallo = False
+        except:
+            print('Pista fallida: ', pista)
 
 def pausarMusica() :
 
@@ -584,21 +602,6 @@ def comprobarReglas():
         cambiarSaque()
     elif puntosTotalesSet % cambioSaque == 0:
         cambiarSaque()
-
-    """ pInvParaGanar = ( puntosPorSet + 3 ) / 2 
-    if ( jugadorUno.puntos == pInvParaGanar or jugadorDos.puntos == pInvParaGanar) and \
-        ( jugadorUno.puntos == 0 or jugadorDos.puntos == 0 ) :
-        audiofx['set'].set_volume( volEfectos / 10 )
-        reproducirEfecto.append(audiofx['set'])
-        pasarDatosSet()
-        estado = estados[4] # Pre Nuevo Set
-        pausarMusica()
-        reproducirComentario = []
-        if jugadorUno.puntos > jugadorDos.puntos:
-            reproducirComentario.append(jugadorUno.tts)
-        else:
-            reproducirComentario.append(jugadorDos.tts)
-        reproducirComentario.append( ganaSet[random.randint(0, len(ganaSet) - 1)] ) """
 
     if ( (jugadorUno.puntos >= puntosPorSet ) or ( jugadorDos.puntos >= puntosPorSet ) ) \
         and abs( jugadorUno.puntos - jugadorDos.puntos ) >= 2 :
@@ -879,7 +882,7 @@ def dibujarCanvas():
     ventana.blit( canvasEscalado, ( 0, 0 ) )
 
 def procesarDerecha():
-    global sets, puntosPorSet, volMusica, volNarracion, volEfectos, musica, narracion, efectos, indiceMusicaFondo
+    global sets, puntosPorSet, volMusica, volNarracion, volEfectos, musica, narracion, efectos, indiceMusicaFondo, indiceMusicaInicio
 
     #Manejando menú inicio
     if estado == estados[0]:
@@ -959,6 +962,21 @@ def procesarDerecha():
                 if  not jugadorDos.saque :
                     cambiarSaque()
 
+        elif indicesMenu['inicio'] == 5: #musica para menu de inicio
+            if indiceMusicaInicio < len(carpetasMusicaFondo) - 1 :
+                indiceMusicaInicio += 1
+                datosInicio[5]['dato'] = nombreCarpetas[indiceMusicaInicio]
+                tocarMusica()
+            elif datosInicio[5]['dato'] == "Apagado" :
+                indiceMusicaInicio = 0
+                datosInicio[5]['dato'] = nombreCarpetas[indiceMusicaInicio]
+                tocarMusica()
+            else:
+                datosInicio[5]['dato'] = "Apagado"
+                pausarMusica()
+
+
+
     elif estado == estados[5]: # pausa
         
         if indicesMenu['pausa'] == 0 : #Volumen de Música
@@ -994,12 +1012,13 @@ def procesarDerecha():
                 datosPausa[4]['dato'] = 'Si'
             else:
                 datosPausa[4]['dato'] = 'No'
+                
 
     audiofx['bep3'].set_volume(volEfectos/10)
     audiofx['bep3'].play()
 
 def procesarIzquierda():
-    global sets, puntosPorSet, volMusica, volNarracion, volEfectos, musica, narracion, efectos, indiceMusicaFondo
+    global sets, puntosPorSet, volMusica, volNarracion, volEfectos, musica, narracion, efectos, indiceMusicaFondo, indiceMusicaInicio
 
     if estado == estados[0]: # Inicio
 
@@ -1021,8 +1040,6 @@ def procesarIzquierda():
             datosInicio[0]['dato'] = jugadorUno.nombre
             datosInicio[4]['datos'][0] = jugadorUno.nombre #Asignación de dato para cambio de saque
             datosInicio[4]['dato'] = datosInicio[4]['datos'][datosInicio[4]['indice']]  # Para menú de inicio, saque inicial
-
-
 
         #jugador Dos
         elif indicesMenu['inicio'] == 1:
@@ -1080,6 +1097,20 @@ def procesarIzquierda():
                 
                 if  not jugadorDos.saque :
                     cambiarSaque()
+
+        elif indicesMenu['inicio'] == 5: #musica en menu de inicio
+
+            if indiceMusicaInicio > 0 :
+                indiceMusicaInicio-= 1
+                datosInicio[5]['dato'] = nombreCarpetas[indiceMusicaInicio]
+                tocarMusica()
+            elif datosInicio[5]['dato'] == "Apagado" :
+                indiceMusicaInicio = len(carpetasMusicaFondo) - 1
+                datosInicio[5]['dato'] = nombreCarpetas[indiceMusicaInicio]
+                tocarMusica()
+            else:
+                datosInicio[5]['dato'] = "Apagado"
+                pausarMusica()
 
     elif estado == estados[5]: # Pausa
 
@@ -1189,6 +1220,7 @@ def procesarContinuar():
 
     if estado == estados[0]:    # Inicio
         estado = estados[2]     # Post juego
+        pausarMusica()
         reproducirComentario = []
 
     elif estado == estados[1]:  # Post juego
@@ -1231,6 +1263,9 @@ def procesarContinuar():
                 reproducirComentario.append(jugadorDos.tts)
             reproducirComentario.append( ganaJuego[random.randint(0, len(ganaJuego) - 1)] )
 
+            mixer.music.load('assets/sonidos/fin/champions.mp3')
+            mixer.music.play(0)
+
         else:
             
             cambiarLado()
@@ -1249,6 +1284,9 @@ def procesarContinuar():
     elif estado == estados[7]:  # fin
         estado = estados[0]     # inicio
         iniciarMarcadores()
+        pausarMusica()
+        if datosInicio[5]['dato'] != "Apagado" : 
+            tocarMusica()
 
     audiofx['bep5'].set_volume(volEfectos/10)
     audiofx['bep5'].play()
@@ -1350,57 +1388,6 @@ while True:
             if evento.key == pygame.K_ESCAPE:
                 tPres["esc"] = False
 
-        #Eventos de joystick
-        """ if evento.type == pygame.JOYAXISMOTION:
-            
-            if evento.axis == 0:
-
-                if evento.value > 0.5:
-                    procesarDerecha()
-                    tPres['jDerecha'] = True
-                else:
-                    tPres['jDerecha'] = False
-
-                if evento.value < -0.5:
-                    procesarIzquierda()
-                    tPres['jIzquierda'] = True
-                else:
-                    tPres['jIzquierda'] = False
-
-            if evento.axis == 1:
-                if evento.value > 0.5:
-                    procesarAbajo()
-                if evento.value < -0.5:
-                    procesarArriba()
-
-        if evento.type == pygame.JOYBUTTONDOWN:
-            
-            if evento.button == 9:
-                procesarContinuar()
-
-            if evento.button == 6:
-
-                if not ( estado == estados[3] ) :
-                    procesarContinuar()
-
-                elif estado == estados[3] :
-                    if tPres['jIzquierda'] == True :
-                        procesarPuntoIzquierda()
-                    elif tPres['jDerecha'] == True :
-                        procesarPuntoDerecha()
-
-            if evento.button == 7 :
-                if tPres['j0'] == True :
-                    retrocederPunto()
-
-            if evento.button == 0 :
-                tPres['j0'] = True
-
-        if evento.type == pygame.JOYBUTTONUP:
-
-            if evento.button == 0 :
-                tPres['j0'] = False """
-
         #Eventos del ratón
         if evento.type == pygame.MOUSEBUTTONDOWN:
 
@@ -1430,6 +1417,9 @@ while True:
             if evento.button == 6 or evento.button == 7 :
                 retrocederPunto()
   
+        if evento.type == pygame.USEREVENT:
+            if estado == estados[0]:  # "inicio"
+                tocarMusica(True)
 
         if evento.type == globales.QUIT:
             quit()
