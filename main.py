@@ -184,7 +184,7 @@ empate = mixer.Sound('assets/sonidos/frases/Diego/comentarios/empate1.wav')
 puntoDeSet = mixer.Sound('assets/sonidos/frases/Diego/info/punto-de-set.wav')
 puntoDePartido = mixer.Sound('assets/sonidos/frases/Diego/info/punto-de-partido.wav')
 
-carpetasMusicaFondo = list(Path('assets/sonidos/fondo').iterdir())
+carpetasMusicaFondo = sorted(list(Path('assets/sonidos/fondo').iterdir()), key=lambda x: x.name.lower())
 rutasMusica = []
 nombreCarpetas = []
 indiceMusicaFondo = 0
