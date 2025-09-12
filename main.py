@@ -244,6 +244,7 @@ jugadores.append({ "nombre" : "Jugador Dos" , "tts" : mixer.Sound('assets/sonido
 #jugadores.append({ "nombre" : "Mario" , "tts" : mixer.Sound('assets/sonidos/nombres/Mario.wav') } )
 jugadores.append({ "nombre" : "Pablo" , "tts" : mixer.Sound('assets/sonidos/nombres/Pablo.wav') } )
 jugadores.append({ "nombre" : "Paco" , "tts" : mixer.Sound('assets/sonidos/nombres/Paco.wav') } )
+jugadores.append({ "nombre" : "Raisa" , "tts" : mixer.Sound('assets/sonidos/nombres/Raisa.wav') } )
 jugadores.append({ "nombre" : "Robin" , "tts" : mixer.Sound('assets/sonidos/nombres/Robin.wav') } )
 jugadores.append({ "nombre" : "Roger" , "tts" : mixer.Sound('assets/sonidos/nombres/Roger.wav') } )
 #jugadores.append({ "nombre" : "Sammy" , "tts" : mixer.Sound('assets/sonidos/nombres/Sammy.wav') } )
