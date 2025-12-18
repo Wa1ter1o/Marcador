@@ -1,8 +1,9 @@
 # Cache
 __pycache__/
-*.py[cod]
-*$py.class
-.cache/
+
+# Environment files
+.env
+.venv/
 
 # IDEs
 .idea/
